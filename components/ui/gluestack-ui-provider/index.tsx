@@ -19,13 +19,11 @@ export function GluestackUIProvider({
 }) {
   const colorScheme  = useColorScheme();
   //const { colorScheme, setColorScheme } = useColorScheme();
-  console.log('mode colorScheme', mode, colorScheme);
-  
+  /*
   useEffect(() => {
-    console.log('useEffect colorScheme', colorScheme);
     //setColorScheme(colorScheme as 'light' | 'dark');
   }, [colorScheme])
-
+  */
   return (
     <View
       style={[

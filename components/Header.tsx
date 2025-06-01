@@ -6,15 +6,12 @@ const dark_logo = require('@/assets/images/zenlot_darkMono.png');
 const light_logo = require('@/assets/images/zenlot_lightMono.png');
 
 export default function Header({title}: {title: string}) {
-    const colorScheme = useColorScheme();
-    const { colors } = useTheme();
-    const logo: ImageSourcePropType | string | undefined = colorScheme === "dark" ? dark_logo : light_logo;
-    const textColor = colorScheme === "dark" ? colors.text : colors.primary;
-    const backgroundColor = colorScheme === "dark" ? colors.background : colors.card;
+  const colorScheme = useColorScheme();
+  const logo: ImageSourcePropType | string | undefined = colorScheme === "dark" ? dark_logo : light_logo;
   return (
     <View style={styles.header}>
-      <Image source={logo} style={styles.logo} />
-      <Text style={styles.title}>{title}</Text>
+      <Image testID="header-logo" source={logo} style={styles.logo} />
+      <Text testID="header-text" style={styles.title}>{title}</Text>
     </View>
   );
 }

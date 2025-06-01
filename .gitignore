@@ -39,4 +39,7 @@ yarn-error.*
 # VS Code
 .vscode/
 
+# Coverage
+coverage/
+
 app-example

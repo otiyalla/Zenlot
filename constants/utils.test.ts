@@ -1,7 +1,5 @@
 import { getPipDifference } from './utils';
 
-// filepath: /Users/otonyeiyalla/Projects/zenlot/zenlot/constants/utils.test.ts
-/*
 describe('getPipDifference', () => {
   it('should calculate pip difference with default pips value', () => {
     const entryPrice = 1.2345;
@@ -39,4 +37,3 @@ describe('getPipDifference', () => {
     expect(result).toBe(0.6000);
   });
 });
-*/

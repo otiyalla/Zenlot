@@ -47,9 +47,9 @@ const Selection = ({ description, options, onValueChange }: {
     };
   
     return (
-      <Select className= 'bg-secondary-50' onValueChange={handleChange} isFocused={isOpen} onOpen={handleOpen} onClose={handleClose} >
-        <SelectTrigger variant='outline' size='md' className='flex-row items-center justify-between'>
-          <SelectInput style={{
+      <Select testID='selection-wrapper' className= 'bg-secondary-50' onValueChange={handleChange} isFocused={isOpen} onOpen={handleOpen} onClose={handleClose} >
+        <SelectTrigger testID='selection-trigger' variant='outline' size='md' className='flex-row items-center justify-between'>
+          <SelectInput id='selection-input' testID='selection-input' style={{
             height: 40, 
           }} className='bg-color-secondary-0' placeholder={description} />
             <SelectIcon className='mr-3'  as={ChevronDownIcon} />
