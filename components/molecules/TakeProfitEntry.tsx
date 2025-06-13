@@ -3,12 +3,12 @@ import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
 import { Pressable } from '@/components/ui/pressable';
 import { TextInputComponent } from '@/components/atoms/TextInput';
-import { getPipDifference, getSuggestedStopLoss, getCurrencyValue} from '@/constants/utils';
+import { getPipDifference, getSuggestedTakeProfit, getCurrencyValue } from '@/constants/utils';
 import { type ExitProps } from '@/types/forex';
 import { useTranslate } from '@/hooks/useTranslate';
 
-interface StopLossEntryProps {
-    SL_RULES: {pips: number}[];
+interface TakeProfitEntryProps {
+    TP_RULES: {pips: number}[];
     entry: number;
     pipValue: number;
     execution: 'buy' | 'sell';
@@ -18,16 +18,16 @@ interface StopLossEntryProps {
     lang?: 'en' | 'fr';
 }
 
-const StopLossEntry = ({lang, entry, execution, pipValue, lotSize, exchangeRate, SL_RULES, onChange}: StopLossEntryProps) => {
+const TakeProfitEntry = ({ lang, entry, pipValue, lotSize, exchangeRate, execution, TP_RULES, onChange }: TakeProfitEntryProps) => {
     const [value, setValue] = useState('');
     const [isFocused, setIsFocused] = useState(false);
-    const stopLoss = getSuggestedStopLoss(execution, entry, pipValue, SL_RULES);
+    const takeProfit = getSuggestedTakeProfit(execution, entry, pipValue, TP_RULES);
     const pips = getPipDifference(entry, Number(value), pipValue);
     const currencyValue = getCurrencyValue(entry, Number(value), pipValue, lotSize, exchangeRate);
     const { localize } = useTranslate(lang);
-
+    
     const handleChange = (text: string) => {
-        setValue(text);
+        setValue(text); 
         onChange(text ? {
             value: Number(text),
             pips: getPipDifference(entry, Number(text), pipValue)
@@ -35,7 +35,7 @@ const StopLossEntry = ({lang, entry, execution, pipValue, lotSize, exchangeRate,
         setIsFocused(false);
     };
 
-    const suggestedStopLoss =  stopLoss.map(({value, pips}, index) => (
+    const suggestedTakeProfit =  takeProfit.map(({value, pips}, index) => (
         <Pressable
             key={index}
             onPress={() => {
@@ -49,32 +49,31 @@ const StopLossEntry = ({lang, entry, execution, pipValue, lotSize, exchangeRate,
     ));
 
     return (
-        <Box className='padding-2 border rounded' style={{ borderColor: 'red' }}>
-            <Text bold className='text-lg m-2'>{localize('forex.stop_loss')}</Text>
+        <Box className='padding-2 border rounded' style={{ borderColor: 'green' }}>
+            <Text bold className='text-lg m-2'>{localize('forex.profit')}</Text>
             <TextInputComponent
-                placeholder={localize('placeholder.loss')}
+                placeholder={localize('placeholder.profit')}
                 value={value}
                 onChangeText={handleChange}
                 onChange={(e) => handleChange(e.nativeEvent.text)}
-                onFocus={() => setIsFocused(!isFocused)}
+                onFocus={(e) => setIsFocused(!isFocused)}
                 inputMode='decimal'
                 keyboardType='decimal-pad'
-                aria-label={localize('placeholder.loss')}
-                
+                aria-label={localize('placeholder.profit')}
             />
             {(isFocused ) && (
                 <Box className="p-2 br-md shadow-2">
-                    {suggestedStopLoss}
+                    {suggestedTakeProfit}
                 </Box>
             )}
             { !!value.length && !isNaN(Number(value)) && (
                 <Box className="p-2">
                     <Text>{localize('forex.pips')}: {pips}</Text>
-                    <Text>{localize('forex.loss')}: {currencyValue}</Text>
+                    <Text>{localize('forex.gain')}: {currencyValue}</Text>
                 </Box>
             )}
         </Box>
     );
 };
 
-export default StopLossEntry;
+export default TakeProfitEntry;

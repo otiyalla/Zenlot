@@ -1,10 +1,6 @@
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, View } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import Header  from '@/components/Header';
 import { SafeAreaView } from 'react-native-safe-area-context';
 //TODO: Home - Forex, Crypto, Stocks
