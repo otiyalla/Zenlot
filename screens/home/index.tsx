@@ -2,12 +2,16 @@ import { Image } from 'expo-image';
 import { Platform, StyleSheet, View } from 'react-native';
 
 import Header  from '@/components/Header';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaViewComponent as SafeAreaView } from '@/components/atoms/SafeAreaView';
+
+import TextEditor from '@/components/TextEditor';
 //TODO: Home - Forex, Crypto, Stocks
 export default function Home() {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView >
         <Header title="Zenlot" />
+
+        <TextEditor/>
     </SafeAreaView>
   );
 }

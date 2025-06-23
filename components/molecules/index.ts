@@ -4,3 +4,4 @@ export { default as TakeProfitEntry } from './TakeProfitEntry';
 export { default as ExecutionType } from './ExecutionType';
 export { default as PipInfo } from './PipInfo';
 export { default as TradeRatio } from './TradeRatio';
+export { default as PasswordInput} from './PasswordInput';

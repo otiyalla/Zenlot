@@ -15,16 +15,16 @@ interface TakeProfitEntryProps {
     lotSize: number;
     exchangeRate: number;
     onChange: React.Dispatch<React.SetStateAction<ExitProps>>;
-    lang?: 'en' | 'fr';
+    language?: 'en' | 'fr';
 }
 
-const TakeProfitEntry = ({ lang, entry, pipValue, lotSize, exchangeRate, execution, TP_RULES, onChange }: TakeProfitEntryProps) => {
+const TakeProfitEntry = ({ language, entry, pipValue, lotSize, exchangeRate, execution, TP_RULES, onChange }: TakeProfitEntryProps) => {
     const [value, setValue] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const takeProfit = getSuggestedTakeProfit(execution, entry, pipValue, TP_RULES);
     const pips = getPipDifference(entry, Number(value), pipValue);
     const currencyValue = getCurrencyValue(entry, Number(value), pipValue, lotSize, exchangeRate);
-    const { localize } = useTranslate(lang);
+    const { localize } = useTranslate(language);
     
     const handleChange = (text: string) => {
         setValue(text); 

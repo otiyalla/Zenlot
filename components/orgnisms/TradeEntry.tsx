@@ -8,6 +8,7 @@ import { getExecutionType, getRatio } from '@/constants/utils';
 import { VStack, HStack, Text } from '@/components/ui';
 import { type ExitProps } from '@/types/forex';
 import { useTranslate } from '@/hooks/useTranslate';
+import { useUser } from '@/providers/UserProvider';
 //TODO: Clean up this component, it is messy and needs to be refactored, create molecules for the pip info, risk/reward info, etc.
 interface TradeEntryProps {
     onSubmit: (trade: { 
@@ -17,11 +18,12 @@ interface TradeEntryProps {
         takeProfit: ExitProps
         lotSize: number;
         pips: number;
+        symbol?: string;
+        exchangeRate?: number;
     }) => void;
-    lang: 'en' | 'fr'
 }
 
-const TradeEntry: React.FC<TradeEntryProps> = ({ onSubmit, lang }) => {
+const TradeEntry: React.FC<TradeEntryProps> = ({ onSubmit }) => {
     const [entryPrice, setEntryPrice] = useState<number>(0);
     const [entry, setEntry] = useState<string>('');
     const [stopLoss, setStopLoss] = useState<ExitProps>({ value: 0, pips: 0 });
@@ -35,7 +37,10 @@ const TradeEntry: React.FC<TradeEntryProps> = ({ onSubmit, lang }) => {
     const [pips, setPips] = useState<number>(0.0001); // Example pip value, adjust as needed
     const { risk, reward } = getRatio(stopLoss.pips, takeProfit.pips);
     const showExecution: boolean = !!(entryPrice && stopLoss.value) || !!(entryPrice && takeProfit.value) || !!(stopLoss.value && takeProfit.value);
-    const {localize} = useTranslate(lang);
+    const { user } = useUser();
+    const language  = user?.language || 'en'; // Default to English if no user language is set
+    
+    const {localize} = useTranslate(language);
 
     const reset = () => {
         setEntryPrice(0);
@@ -94,7 +99,7 @@ const TradeEntry: React.FC<TradeEntryProps> = ({ onSubmit, lang }) => {
                 <HStack space='sm' style={{ marginBottom: 10, justifyContent: 'space-between' }}>
                     <VStack>
                         <Text>{localize('type')}</Text>
-                        {showExecution && (<ExecutionType lang={lang} execution={execution}/>)}
+                        {showExecution && (<ExecutionType language={language} execution={execution}/>)}
                     </VStack>
                     <VStack space='xs'>
                         <Text>{localize('rate')}: {exchangeRate}</Text>
@@ -112,14 +117,14 @@ const TradeEntry: React.FC<TradeEntryProps> = ({ onSubmit, lang }) => {
                     aria-label={localize('placeholder.entry')}
                 />
                 <PipInfo 
-                    lang={lang}
+                    language={language}
                     handlePipChange={setPips}
                     handleLotChange={setLotSize}
                 />
                 <HStack space='xs' style={{ margin: 5, justifyContent: 'space-between' }}>
-                    <StopLossEntry lang={lang} execution={execution} entry={entryPrice} pipValue={pips} lotSize={lotSize} exchangeRate={exchangeRate} SL_RULES={SL_RULES} onChange={setStopLoss} />
-                    {!!reward && (<TradeRatio lang={lang} risk={risk} reward={reward}/>)}
-                    <TakeProfitEntry lang={lang} execution={execution} entry={entryPrice} pipValue={pips} lotSize={lotSize} exchangeRate={exchangeRate} TP_RULES={TP_RULES} onChange={setTakeProfit} />
+                    <StopLossEntry language={language} execution={execution} entry={entryPrice} pipValue={pips} lotSize={lotSize} exchangeRate={exchangeRate} SL_RULES={SL_RULES} onChange={setStopLoss} />
+                    {!!reward && (<TradeRatio language={language} risk={risk} reward={reward}/>)}
+                    <TakeProfitEntry language={language} execution={execution} entry={entryPrice} pipValue={pips} lotSize={lotSize} exchangeRate={exchangeRate} TP_RULES={TP_RULES} onChange={setTakeProfit} />
                 </HStack>
             </ModalComponent>
         </View>

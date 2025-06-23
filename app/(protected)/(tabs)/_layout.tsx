@@ -8,14 +8,18 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
+  
   return (
     <Tabs
+      backBehavior='order'
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].primary,
         headerShown: false,
+        tabBarInactiveTintColor: Colors[colorScheme ?? 'light'].secondary,
+        
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
@@ -51,7 +55,8 @@ export default function TabLayout() {
             // Prevent default action
             console.log('History tab pressed:', e);
             e.preventDefault();
-            // Do something else, like navigating to a different screen
+            // Redirect user to login page
+
           },
          }}
       />

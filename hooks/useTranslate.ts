@@ -13,10 +13,12 @@ export function useTranslate(
     fr: french
   });
 
+  const SUPPORTED_LANGUAGES = ['en', 'fr']
+
   i18n.locale = language ?? getLocales()[0].languageCode ?? 'en';
   i18n.enableFallback = true;
   
   const localize = i18n.t.bind(i18n);
 
-  return {localize, i18n}
+  return {localize, i18n, SUPPORTED_LANGUAGES}
 }

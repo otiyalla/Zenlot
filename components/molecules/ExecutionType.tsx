@@ -3,11 +3,11 @@ import { useTranslate } from '@/hooks/useTranslate';
 
 interface ExecutionTypeProp {
     execution: 'buy' | 'sell'
-    lang?: 'en' | 'fr';
+    language?: 'en' | 'fr';
 }
 
-const ExecutionType = ({lang, execution}: ExecutionTypeProp ) => {
-    const { localize } = useTranslate(lang);
+const ExecutionType = ({language, execution}: ExecutionTypeProp ) => {
+    const { localize } = useTranslate(language);
     const bg_color = (execution === 'buy') ? ' bg-green-500' : ' bg-red-500'
     const style = `rounded justify-center items-center ${bg_color}`
     return (

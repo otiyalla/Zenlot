@@ -8,10 +8,10 @@ import { useTranslate } from '@/hooks/useTranslate';
 interface PipInfoProps {
     handlePipChange: Dispatch<SetStateAction<number>>
     handleLotChange: Dispatch<SetStateAction<number>>
-    lang?: 'en' | 'fr';
+    language?: 'en' | 'fr';
 }
 
-const PipInfo: React.FC<PipInfoProps> = ({lang, handleLotChange, handlePipChange}) => {
+const PipInfo: React.FC<PipInfoProps> = ({language, handleLotChange, handlePipChange}) => {
     const [pips, setPips] = useState<string>("0.0001");
     const [lotSize, setLotSize] = useState<string>('0.01');
     const MIN_LOT_SIZE = '0.01';
@@ -20,7 +20,7 @@ const PipInfo: React.FC<PipInfoProps> = ({lang, handleLotChange, handlePipChange
         const normalized = sanitized.replace(/(\..*?)\..*/g, '$1'); // Only one dot allowed
         return normalized;
     };
-    const { localize } = useTranslate(lang);
+    const { localize } = useTranslate(language);
 
     const handleLotSize = (text: string) => {
         const lot = sanitized(text);

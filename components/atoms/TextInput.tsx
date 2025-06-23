@@ -8,14 +8,23 @@ export function TextInputComponent(props: TextInputProps) {
   const colorScheme = useColorScheme();
   const styles = StyleSheet.create({
     input: {
-      height: 40,
-      borderColor: Colors[colorScheme ?? "light"].borderColor,
-      borderWidth: 3,
+      margin: 5,
+      padding: 10,
+      borderRadius: 10,
+      borderColor: Colors[colorScheme ?? "light"].textBorderColor,
+      borderWidth: 2,
       paddingHorizontal: 10,
       color: Colors[colorScheme ?? "light"].text,
       backgroundColor: Colors[colorScheme ?? "light"].background,
+  
     },
   });
-
-  return <TextInput style={styles.input} placeholderTextColor={Colors[colorScheme ?? "light"].text}  {  ...props} />;
+  const propstyle = props.style;
+  return (
+    <TextInput
+      {...props}
+      style={[styles.input, propstyle]}
+      placeholderTextColor={Colors[colorScheme ?? "light"].placeholderTextColor}
+    />
+  );
 }

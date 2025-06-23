@@ -6,11 +6,11 @@ import { useTranslate } from '@/hooks/useTranslate';
 interface TradeRatioProps {
     risk: number;
     reward: number;
-    lang: 'en' | 'fr';
+    language: 'en' | 'fr';
 }
 
-const TradeRatio: React.FC<TradeRatioProps> = ({ lang, risk, reward }) => {
-    const { localize } = useTranslate(lang);
+const TradeRatio: React.FC<TradeRatioProps> = ({ language, risk, reward }) => {
+    const { localize } = useTranslate(language);
     return (
        <VStack space='xs' style={{  justifyContent: 'space-evenly' }}>
             <Text bold>{localize('forex.ratio')}</Text>
