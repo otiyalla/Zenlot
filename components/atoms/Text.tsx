@@ -5,15 +5,16 @@ import { Colors } from "@/constants/Colors";
 
 interface IText extends ITextProps {
   inverse?: boolean
+  error?: boolean
 }
 
 export function TextComponent(props: IText) {
   const colorScheme = useColorScheme();
   const theme = props.inverse ? (colorScheme === 'light' ? 'dark' : 'light') : colorScheme;
   const style = {
-    color: Colors[theme ?? 'light'].text,
+    color: props.error ? Colors[theme ?? 'light'].error : Colors[theme ?? 'light'].text,
     ...(Array.isArray(props.style)
-      ? Object.assign({}, ...props.style)
+      ? Object.assign({}, ...props.style.flat().filter(Boolean))
       : props.style)
   };
   return (

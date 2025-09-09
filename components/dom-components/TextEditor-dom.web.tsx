@@ -25,11 +25,6 @@ function onError(error: Error) {
   console.error('editor error: ', error)
 }
 
-function MyOnChangePlugin( props: {onChange: (editorState: EditorState) => void}){
-
-  
-}
-
 const editorConfig = {
   namespace: "Zenlot Journal",
   nodes: [],
@@ -39,7 +34,7 @@ const editorConfig = {
   theme: LightTheme,
   editorState: ''
 };
-export default function Editor({
+export default React.memo(function Editor({
   setPlainText,
   setEditorState,
   initialEditorState,
@@ -60,7 +55,17 @@ export default function Editor({
     <>
       <LexicalComposer initialConfig={editorConfig}>
         <div className={`editor-container-${colorScheme}`}>
-          <ToolbarPlugin />
+          <div
+            className={`toolbar-scrollable-${colorScheme}`}
+            style={{
+              overflowX: "auto",
+              whiteSpace: "nowrap",
+              maxWidth: "100%",
+              marginBottom: "8px"
+            }}
+          >
+            <ToolbarPlugin />
+          </div>
           <div className={`editor-inner-${colorScheme}`}>
             <RichTextPlugin
               contentEditable={
@@ -94,4 +99,4 @@ export default function Editor({
       </LexicalComposer>
     </>
   );
-}
+});

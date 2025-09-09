@@ -1,4 +1,5 @@
-import { getPipDifference } from './utils';
+
+import { getPipDifference, getExecutionType } from './utils';
 
 describe('getPipDifference', () => {
   it('should calculate pip difference with default pips value', () => {
@@ -35,5 +36,43 @@ describe('getPipDifference', () => {
     const existPrice = 1.23450;
     const result = getPipDifference(entryPrice, existPrice);
     expect(result).toBe(0.6000);
+  });
+});
+
+describe('getExecutionType', () => {
+  it('should return "buy-long" when TakeProfitPrice > entryPrice', () => {
+    expect(getExecutionType(1.2, 1.1, 1.3)).toBe('buy-long');
+  });
+
+  it('should return "buy-long" when TakeProfitPrice > stopLossPrice', () => {
+    expect(getExecutionType(1.2, 1.1, 1.15)).toBe('buy-long');
+  });
+
+  it('should return "sell" when TakeProfitPrice < entryPrice', () => {
+    expect(getExecutionType(1.2, 1.1, 1.0)).toBe('sell');
+  });
+
+  it('should return "sell" when stopLossPrice > entryPrice', () => {
+    expect(getExecutionType(1.2, 1.3, 1.1)).toBe('sell');
+  });
+
+  it('should return "sell" when TakeProfitPrice < stopLossPrice', () => {
+    expect(getExecutionType(1.2, 1.3, 1.1)).toBe('sell');
+  });
+
+  it('should return "buy" when TakeProfitPrice === entryPrice and stopLossPrice < entryPrice', () => {
+    expect(getExecutionType(1.2, 1.1, 1.2)).toBe('buy');
+  });
+
+  it('should return "sell" when stopLossPrice === entryPrice and TakeProfitPrice < entryPrice', () => {
+    expect(getExecutionType(1.2, 1.2, 1.1)).toBe('sell');
+  });
+
+  it('should return "buy" as default case', () => {
+    expect(getExecutionType(1.2, 1.2, 1.2)).toBe('buy');
+  });
+
+  it('should handle undefined stopLossPrice and TakeProfitPrice gracefully', () => {
+    expect(getExecutionType(1.2)).toBe('buy');
   });
 });

@@ -8,19 +8,26 @@
     "scheme": "zenlot",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "update": {
-      "fallbackToCacheTimeout": 0,
-      "enable": false
-    },
     "assetsBundlePatterns": [
       "**/*",
       "assts/*"
     ],
+    "splash": {
+      "image": "./assets/images/splash/zenlot.png",
+      "imageWidth": 200,
+      "resizeMode": "contain",
+      "backgroundColor": "#001c34",
+      "dark": {
+        "image": "./assets/images/splash/zenlot-dark.png",
+        "backgroundColor": "#001c34"
+      }
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.zenlot.app",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIAccessibilityIsReduceMotionEnabled": false
       }
     },
     "android": {
@@ -64,7 +71,8 @@
           }
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

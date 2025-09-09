@@ -1,37 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
 import { Pressable } from '@/components/ui/pressable';
 import { TextInputComponent } from '@/components/atoms/TextInput';
-import { getPipDifference, getSuggestedStopLoss, getCurrencyValue} from '@/constants/utils';
-import { type ExitProps } from '@/types/forex';
+import { getPipDifference, getSuggestedStopLoss, getCurrencyValue, formatNumberByLocale} from '@/constants/utils';
+import { TradeEntryState, ExecutionProps } from '@/types';
 import { useTranslate } from '@/hooks/useTranslate';
+import { useTrade } from '@/providers/TradeProvider';
+import { useUser } from '@/providers/UserProvider';
 
-interface StopLossEntryProps {
-    SL_RULES: {pips: number}[];
-    entry: number;
-    pipValue: number;
-    execution: 'buy' | 'sell';
-    lotSize: number;
-    exchangeRate: number;
-    onChange: React.Dispatch<React.SetStateAction<ExitProps>>;
-    language?: 'en' | 'fr';
-}
-
-const StopLossEntry = ({language, entry, execution, pipValue, lotSize, exchangeRate, SL_RULES, onChange}: StopLossEntryProps) => {
-    const [value, setValue] = useState('');
+const StopLossEntry = ({ execution, exchangeRate}: ExecutionProps) => {
     const [isFocused, setIsFocused] = useState(false);
-    const stopLoss = getSuggestedStopLoss(execution, entry, pipValue, SL_RULES);
+    const { localize } = useTranslate();
+    const { trade, setTrade} = useTrade();
+    const slValue = trade.stopLoss.value ? trade.stopLoss.value.toString() : '';
+    const [value, setValue] = useState(slValue);
+    const { symbol, entry, lot, pips: pipValue } = trade;
+    const { user } = useUser();
+    const { rules, language, accountCurrency } = user;
+    const { stop_loss } = rules.forex;
+    const stopLoss = getSuggestedStopLoss(execution, entry, pipValue, stop_loss);
     const pips = getPipDifference(entry, Number(value), pipValue);
-    const currencyValue = getCurrencyValue(entry, Number(value), pipValue, lotSize, exchangeRate);
-    const { localize } = useTranslate(language);
+    const currencyValue = getCurrencyValue(symbol, entry, Number(value), lot, exchangeRate);
+    const loss = formatNumberByLocale(currencyValue, language, accountCurrency);
 
     const handleChange = (text: string) => {
         setValue(text);
-        onChange(text ? {
+        const stopLoss = text ? {
             value: Number(text),
             pips: getPipDifference(entry, Number(text), pipValue)
-        } : { value: 0, pips: 0 });
+        } : { value: 0, pips: 0 };
+        setTrade((prev: TradeEntryState) => {
+            return { ...prev, stopLoss}
+        });
         setIsFocused(false);
     };
 
@@ -70,7 +71,7 @@ const StopLossEntry = ({language, entry, execution, pipValue, lotSize, exchangeR
             { !!value.length && !isNaN(Number(value)) && (
                 <Box className="p-2">
                     <Text>{localize('forex.pips')}: {pips}</Text>
-                    <Text>{localize('forex.loss')}: {currencyValue}</Text>
+                    <Text>{localize('forex.loss')}: {loss}</Text>
                 </Box>
             )}
         </Box>

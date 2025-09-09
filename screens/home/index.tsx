@@ -1,36 +1,65 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet, View } from 'react-native';
-
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { TextComponent as Text } from '@/components/atoms/Text';
 import Header  from '@/components/Header';
 import { SafeAreaViewComponent as SafeAreaView } from '@/components/atoms/SafeAreaView';
+import useNetwork from '@/hooks/useNetwork';
+import TradingAnalysis from './components/TradingAnalysis';
+import { ButtonComponent as Button } from '@/components/atoms/Button';
+import { useState } from 'react';
+import ModalEntry from '@/components/templates/ModalEntry';
+import { useTrade } from '@/providers/TradeProvider';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { Colors } from '@/constants/Colors';
+import { useTranslate } from '@/hooks/useTranslate';
+import ActiveTrade from './components/molecules/ActiveTrade';
 
-import TextEditor from '@/components/TextEditor';
+//user should be able to select favorite pairs at setup
 //TODO: Home - Forex, Crypto, Stocks
 export default function Home() {
-  return (
-    <SafeAreaView >
-        <Header title="Zenlot" />
+  const {isOnline} = useNetwork();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const colorSchema = useColorScheme();
+  const theme = Colors[colorSchema ?? 'light'];
+  const { localize } = useTranslate();
+  
+  const handleOpen = () => {
+    setIsModalOpen(true);
+  };
 
-        <TextEditor/>
+      //todo: BUTTON ISN'T SHOWING BECAUSE OF THE STYLE SHEET. Flex 1 is hiding it.
+  return (
+    <SafeAreaView>
+      <Header title="enlot" />
+      { !isOnline && (
+        <Text style={[styles.noInternet, { color: theme.error }]}>
+          {localize('no_internet_connection')}
+        </Text>
+      )}
+      <TradingAnalysis/>
+      <View style={styles.container}>
+          <Button accessibilityLabel={localize('tap_to_enter_trade')} onPress={handleOpen} title={localize('tap_to_enter_trade')} />
+        
+        {isModalOpen && <ModalEntry isOpen={isModalOpen} setIsOpen={setIsModalOpen}/>}
+        <View style={styles.activeTrade}>
+          {!isModalOpen && <ActiveTrade/> }
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    marginLeft: 10,
+    marginRight: 10,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  activeTrade: {
+    marginTop: 15,
+    marginLeft: 5,
+    marginRight: 5,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  noInternet: {
+    textAlign: 'center',
+    marginVertical: 1,
   },
 });

@@ -68,7 +68,7 @@ h1 {
 .editor-container-dark {
   margin: 20px auto 20px auto;
   width: 100%;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.136);
   border-radius: 10px;
   color: #fff;
   background-color: #000;
@@ -398,7 +398,7 @@ pre::-webkit-scrollbar-thumb {
 .toolbar-dark {
   display: flex;
   margin-bottom: 1px;
-  background: #0a0a0a;
+  background: #4c4b4b57;
   padding: 4px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;

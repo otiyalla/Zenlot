@@ -6,7 +6,14 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "environment": "development"
+    },
+    "ios-simulator": {
+      "ios": {
+        "simulator": true
+      },
+      "extends": "development"
     },
     "preview": {
       "distribution": "internal",

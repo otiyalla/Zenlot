@@ -12,6 +12,7 @@ import {
     SelectItem, } from '../ui/select';
 import { ChevronDownIcon, Icon } from '../ui/icon'
 import React, { useState } from 'react';
+import { useTranslate } from '@/hooks/useTranslate';
 
 interface ISelectItem {
     label: string;
@@ -30,18 +31,20 @@ interface ISelection {
     triggerStyle?: any;
     icon?: React.ReactElement<typeof Icon>;
     isFocused?: boolean;
+    disable?: boolean;
 }
 
-const Selection = ({ selectStyle, description, selectedValue, options, onValueChange }: ISelection) => {
+const Selection = ({ disable, selectStyle, description, selectedValue, options, onValueChange }: ISelection) => {
     const [selectedOption, setSelectedOption] = useState(selectedValue || '');
     const [isOpen, setIsOpen] = useState(false);
+    const { localize } = useTranslate();
 
     const Items = options.map((option: ISelectItem) => (
         <SelectItem
             key={option.value}
-            label={option.label}
+            label={localize(option.label)}
             value={option.value}
-            isDisabled={option.isDisabled}
+            isDisabled={option.isDisabled ?? disable}
             //isHovered={option.value === selectedOption}
         />
     ));
@@ -53,7 +56,7 @@ const Selection = ({ selectStyle, description, selectedValue, options, onValueCh
     };
 
     const handleOpen = () => {
-        setIsOpen(true);
+      setIsOpen(true);  
     };
 
     const handleClose = () => {

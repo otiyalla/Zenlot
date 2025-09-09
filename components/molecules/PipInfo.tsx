@@ -1,37 +1,55 @@
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextInputComponent } from '@/components/atoms/TextInput';
-import { Text } from '@/components/ui/text';
-import { HStack } from '@/components/ui/hstack';
-import { VStack } from '@/components/ui/vstack';
+import { TextComponent as Text } from '@/components/atoms/Text';
+import { VStack, HStack } from '@/components/ui';
 import { useTranslate } from '@/hooks/useTranslate';
+import { useTrade } from '@/providers/TradeProvider';
+import { MIN_LOT_SIZE } from '@/constants/utils';
+import { TradeEntryState } from '@/types';
 
-interface PipInfoProps {
-    handlePipChange: Dispatch<SetStateAction<number>>
-    handleLotChange: Dispatch<SetStateAction<number>>
-    language?: 'en' | 'fr';
-}
-
-const PipInfo: React.FC<PipInfoProps> = ({language, handleLotChange, handlePipChange}) => {
-    const [pips, setPips] = useState<string>("0.0001");
-    const [lotSize, setLotSize] = useState<string>('0.01');
-    const MIN_LOT_SIZE = '0.01';
+const PipInfo: React.FC<{}> = () => {
+    const { trade, setTrade } = useTrade();
+    const { pips: savedPips, lot } = trade;
+    const [pips, setPips] = useState<string>(savedPips.toString());
+    const [lotSize, setLotSize] = useState<string>(lot.toString());
     const sanitized = (text: string) => {
         const sanitized = text.replace(/[^0-9.]/g, ''); // Only allow digits and one dot
         const normalized = sanitized.replace(/(\..*?)\..*/g, '$1'); // Only one dot allowed
         return normalized;
     };
-    const { localize } = useTranslate(language);
+    const { localize } = useTranslate();
+ 
+    useEffect(() => {
+        if(savedPips.toString() !== pips && !isNaN(savedPips)){
+            setPips(savedPips.toString())
+        }
+        if(lot.toString() !== lotSize && !isNaN(lot)){
+            setLotSize(lot.toString())
+        }
+    }, [savedPips, lot])
 
     const handleLotSize = (text: string) => {
         const lot = sanitized(text);
         setLotSize(lot);
-        if (lot >= MIN_LOT_SIZE) handleLotChange(Number(lot));
+        if (lot >= MIN_LOT_SIZE){ 
+            //const newTrade = { ...trade};
+            //newTrade.lot = Number(lot);
+            //onTradeChange(newTrade);
+            setTrade((prev: TradeEntryState) => {
+                return { ...prev, lot: Number(lot)}
+            });
+        }
     };
 
     const handlePips = (text: string) => {
         const pips = sanitized(text);
         setPips(pips);
-        handlePipChange(Number(pips));
+        //const newTrade = { ...trade};
+        //newTrade.pips = Number(pips);
+        //onTradeChange(newTrade);
+        setTrade((prev: TradeEntryState) => {
+            return { ...prev, pips: Number(pips)}
+        });
     }
 
     return (

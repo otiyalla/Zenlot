@@ -1,29 +1,12 @@
 import { createContext, useContext, useState, PropsWithChildren, useEffect, use } from 'react';
-import { IUser } from '@/types'; 
+import { ILoginInfo, IUser, ISignUp, IAuthContext } from '@/types'; 
 import { router, SplashScreen } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
- 
+import { signinApi } from '@/api/signin';
+import { email } from 'zod';
 //TODO: Splash screen is not hiding on auth check, need to fix it
 
 SplashScreen.preventAutoHideAsync();
-
-interface IAuthContext {
-    isAuthenticated: boolean;
-    authChecked: boolean;
-    user: IUser | null;
-    login: (login_info: any) => Promise<void>;
-    logout: () => void;
-    signup: (signup_info: ISignUp) => void;
-    setUser: (user: any) => void;
-}
-
-interface ISignUp {
-    fname: string;
-    lname: string;
-    email: string;
-    password: string;
-    language: string;
-}
 
 const initialAuthState: IAuthContext = {
     isAuthenticated: false,
@@ -31,45 +14,57 @@ const initialAuthState: IAuthContext = {
     user: null,
     login: async () => {},
     logout: () => {},
-    signup: () => {},
-    setUser: () => {},
+    signup: async () => {},
+    setUser: (user: IUser) => {},
+    resetPassword: async (email: string): Promise<string> => { return ''; }
 }
 const AuthContext = createContext<IAuthContext>(initialAuthState);
 const authStorageKey = 'zenlot-auth-token';
+const authRefreshKey = 'zenlot-auth-token-refresh';
+const zen_user = 'zenlot-user-id';
 const AuthProvider = ({ children }: PropsWithChildren) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [authChecked, setAuthChecked] = useState<boolean>(false);
     const [user, setUser] = useState<IUser | null>(null);
+    const { signin, signup: register, verify, resetpassword } = signinApi;
 
     useEffect(() => {
         const checkAuthStatus = async () => {
-            //await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate async operation
             try {
                 const token = await AsyncStorage.getItem(authStorageKey);
-                if (token) {
-                    setIsAuthenticated(true);
-                    // Optionally, you can fetch user data here if needed
-                    const storedUser = JSON.parse(token); // Assuming token is a JSON string with user data
-                    setUser(storedUser);
-                    console.log('User authenticated:', storedUser);
-                    router.replace('/(protected)/(tabs)'); 
-                } 
+                const refreshToken = await AsyncStorage.getItem(authRefreshKey);
+                if (!token || !refreshToken) {
+                    logout();
+                    return;
+                }
+                const user = await verify(token, refreshToken);
+                if (!user) {
+                    logout();
+                    return;
+                }
+                setIsAuthenticated(user?.isAuthenticated ?? false);
+                delete user.isAuthenticated;
+                setUser(user);
+                router.replace('/(protected)/(tabs)');
+                
             } catch (error) {
                 console.error('Failed to check auth status:', error);
                 setIsAuthenticated(false);
                 setUser(null);
             }
             setAuthChecked(true);
-            console.log('Auth status checked:', isAuthenticated, user);
         };
         checkAuthStatus();
-    }, []);
+    }, [isAuthenticated]);
 
-    const setAuthToken = async (state: {token: string}) => {
+    const setAuthToken = async (state: {token: string, refresh_token: string, userId: number}) => {
         try {
-            const token = JSON.stringify(state.token); // Assuming state.token is a string or object
+            const token = state.token;
+            const refresh_token = state.refresh_token;
             setIsAuthenticated(true);
             await AsyncStorage.setItem(authStorageKey, token);
+            await AsyncStorage.setItem(authRefreshKey, refresh_token);
+            await AsyncStorage.setItem(zen_user, state.userId.toString());
         } catch (error) {
             console.error('Failed to set auth token:', error);
         }
@@ -78,6 +73,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     const clearAuthToken = async () => {
         try {
             await AsyncStorage.removeItem(authStorageKey);
+            await AsyncStorage.removeItem(authRefreshKey);
             setIsAuthenticated(false);
             setUser(null);
         } catch (error) {
@@ -98,51 +94,37 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     }, [authChecked])
 
    
-    const login = async (login_info: {email: string, password: string}) => {
-        const user:IUser = await new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({
-                    id: 1,
-                    fname: 'John',
-                    lname: 'Doe',
-                    email: 'test@email.com',
-                    role: 'user',
-                    language: 'fr',
-                });
-            }, 1000);
-        });
+    const login = async (login_info: ILoginInfo) => {
+
+        const {user, access_token, refresh_token}:{user: IUser, access_token: string, refresh_token: string} = await signin(login_info);
         if (!user) {
             throw new Error('Login failed');
         }
+        const { isAuthenticated } = user
+        setIsAuthenticated(isAuthenticated ?? false);
+        delete user.isAuthenticated;
+        console.log("user: ", user)
         setUser(user);
-        setIsAuthenticated(true);
-        await setAuthToken({token: JSON.stringify(user)}); 
-        console.log('User logged in:', isAuthenticated, user);
+        await setAuthToken({token: access_token, refresh_token: refresh_token, userId: user.id}); 
         router.replace('/(protected)/(tabs)');
     };
 
     const signup = async (signup_info: ISignUp) => {
-        const user:IUser = await new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({
-                    id: 1,
-                    fname: 'James',
-                    lname: 'Bond',
-                    email: 'jame@email.com',
-                    role: 'user',
-                    language: 'en',
-                });
-            }, 1000);
-        });
+        const {user, access_token, refresh_token}:{user: IUser, access_token: string, refresh_token: string} = await register(signup_info);
+        
         if (!user) {
             throw new Error('Sign up failed');
         }
+        setIsAuthenticated(user.isAuthenticated ?? false); 
+        delete user.isAuthenticated;
         setUser(user);
-        setIsAuthenticated(true);
-        await setAuthToken({token: JSON.stringify(user)}); 
-        console.log('User logged in:', isAuthenticated, user);
+        await setAuthToken({token: access_token, refresh_token: refresh_token, userId: user.id}); 
         router.replace('/(protected)/(tabs)');
     };
+
+    const resetPassword = async (email: string) => {
+        return await resetpassword(email);
+    }
 
     const logout = () => {
         clearAuthToken();
@@ -156,12 +138,13 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         isAuthenticated,
         authChecked,
         user,
-        login: login,
-        logout: logout,
-        signup: signup,
-        setUser: setUser,
+        login,
+        logout,
+        signup,
+        setUser,
+        resetPassword
     };
-
+    
     return (
         <AuthContext.Provider value={authState}>
             {children}

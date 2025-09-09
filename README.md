@@ -65,3 +65,12 @@ To release
 3. You can change the release channel but you will need the publication ID
 
 To build, use >> expo build:andriod
+
+//Feature: Pined note
+
+//TODO: To implement
+Hands-on experience with frontend testing frameworks and modern build pipelines
+Experience with large-scale data tracking and analytics infrastructure
+Knowledge of marketing automation solutions and advertising network integrations
+Familiarity with A/B testing solutions and experimentation methodologies
+Understanding of cryptocurrency, blockchain technology, and decentralized applications

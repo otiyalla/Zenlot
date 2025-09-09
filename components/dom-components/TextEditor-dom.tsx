@@ -30,7 +30,7 @@ const editorConfig = {
   theme: LightTheme,
   editorState: ''
 };
-export default function Editor({
+export default React.memo(function Editor({
   setPlainText,
   setEditorState,
   initialEditorState,
@@ -51,28 +51,38 @@ export default function Editor({
     <>
       <LexicalComposer initialConfig={editorConfig}>
         <div className={`editor-container-${colorScheme}`} >
-          <ToolbarPlugin />
+          <div
+            className={`toolbar-scrollable-${colorScheme}`}
+            style={{
+              overflowX: "auto",
+              whiteSpace: "nowrap",
+              maxWidth: "100%",
+              marginBottom: "8px"
+            }}
+          >
+            <ToolbarPlugin />
+          </div>
           <div className={`editor-inner-${colorScheme}`} >
             <RichTextPlugin
               contentEditable={
-                <ContentEditable
-                  className={`editor-input-${colorScheme}`}
-                  aria-placeholder={placeholder}
-                  placeholder={
-                    <div className={`editor-placeholder-${colorScheme}`}>{placeholder}</div>
-                  }
-                />
+          <ContentEditable
+            className={`editor-input-${colorScheme}`}
+            aria-placeholder={placeholder}
+            placeholder={
+              <div className={`editor-placeholder-${colorScheme}`}>{placeholder}</div>
+            }
+          />
               }
               ErrorBoundary={LexicalErrorBoundary}
             />
             <OnChangePlugin
               onChange={(editorState: EditorState, editor: LexicalEditor, tags: Set<string>) => {
-                editorState.read(() => {
-                  const root = $getRoot();
-                  const textContent = root.getTextContent();
-                  setPlainText(textContent);
-                });
-                setEditorState(JSON.stringify(editorState.toJSON()));
+          editorState.read(() => {
+            const root = $getRoot();
+            const textContent = root.getTextContent();
+            setPlainText(textContent);
+          });
+          setEditorState(JSON.stringify(editorState.toJSON()));
               }}
               ignoreHistoryMergeTagChange
               ignoreSelectionChange
@@ -85,4 +95,4 @@ export default function Editor({
       </LexicalComposer>
     </>
   );
-}
+});

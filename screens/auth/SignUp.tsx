@@ -22,49 +22,48 @@ import {
 import { useTranslate } from '@/hooks/useTranslate';
 import Logo from '@/components/atoms/Logo';
 import PasswordInput from '@/components/molecules/PasswordInput';
+import ForexRulesTable from '@/components/molecules/ForexRulesTable';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Colors } from '@/constants/Colors';
+import { Colors, languageOptions, currencyOptions } from '@/constants';
 import { useAuth } from '@/providers/AuthProvider';
 import { router } from 'expo-router';
+import { signupValidation } from '@/validations';
+import { ForexRule } from "@/types";
 
-
-const languageOptions = [
-{ label: 'English', value: 'en' },
-{ label: 'French', value: 'fr' },
-];
 
 const SignUp: React.FC = () => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
-    const { localize, SUPPORTED_LANGUAGES } = useTranslate();
-    const [language, setLanguage] = useState(localize('select_language'));
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; 
-    const isValid = (regex: RegExp, value: string) => regex.test(value);
+    const [firstName, setFirstName] = useState<string>('');
+    const [lastName, setLastName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [confirmPassword, setConfirmPassword] = useState<string>('');
+    const [error, setError] = useState<string>('');
+    const { localize } = useTranslate();
+    const [language, setLanguage] = useState<string>(localize('language.select_language'));
+    const [accountCurrency, setAccountCurrency] = useState<string>(localize('currency.select_account_currency'));
+    const [takeProfitRules, setTakeProfitRules] = useState<ForexRule[]>([]);
+    const [stopLossRules, setStopLossRules] = useState<ForexRule[]>([]);
     const themeColor = useColorScheme() === 'dark' ? Colors.dark : Colors.light;
     const { signup } = useAuth();
-    const checkLanguage = (lang: string) => SUPPORTED_LANGUAGES.some(language => language === lang);
         
     const onPasswordChange: Dispatch<SetStateAction<string>> = (value) => {
         setPassword(value);
         setError('');
     };
 
+    const resetForm = () => {
+        setEmail('');
+        setPassword('');
+        setFirstName('');
+        setLastName('');
+        setConfirmPassword('');
+        setError('');
+    }
+
     const handleSignUp = async () => {
-        // Handle sign up logic here
-            const isValidEmail = isValid(emailRegex, email);
-            const isValidPassword = isValid(passwordRegex, password);
             const isMatch = password === confirmPassword;
-            const isValidLanguage = checkLanguage(language);
             
-            if (!isValidEmail || !isValidPassword || !isValidLanguage || !firstName.length || !lastName.length) {
-                setError(localize('form_incomplete'));
-                return
-            }else if (!isMatch) {
+            if (!isMatch) {
                 setError(localize('password_invalid'));
                 return
             }else {
@@ -74,16 +73,24 @@ const SignUp: React.FC = () => {
                         lname: lastName,
                         email,
                         password,
-                        language
+                        language,
+                        accountCurrency,
+                        rules: {
+                            forex: {
+                                take_profit: takeProfitRules.map(rule => ({ pips: rule.pips })),
+                                stop_loss: stopLossRules.map(rule => ({ pips: rule.pips }))
+                            }
+                        }
                     }
-                    await signup(signup_info);
+                    const validated = signupValidation.safeParse(signup_info);
+                    if (!validated.success) {
+                        console.error(validated.error.message);
+                        setError(localize('form_incomplete'));
+                        return;
+                    }
+                    signup(signup_info);
                     console.log('User sign up info:', signup_info);
-                    setEmail('');
-                    setPassword('');
-                    setFirstName('')
-                    setLastName('');
-                    setConfirmPassword('')
-                    setError('');
+                    resetForm();
 
                 } catch (error) {
                     console.error('Sign In error:', error);
@@ -93,7 +100,9 @@ const SignUp: React.FC = () => {
     return (
     <SafeAreaView>
         <ScrollView contentContainerStyle={styles.container}>
-            <Logo/>
+            <View style={styles.logoContainer}>
+                <Logo/>              
+            </View>
             <Text style={styles.title} aria-label={localize('signup')} bold size={'3xl'} >{localize('signup')}</Text>
             <FormControl
                 size='md'
@@ -150,7 +159,24 @@ const SignUp: React.FC = () => {
                     onValueChange={setLanguage}
                 />
             </View>
+            <View style={styles.pickerContainer}>
+                <Selection
+                    options={currencyOptions}
+                    selectedValue={accountCurrency}
+                    onValueChange={setAccountCurrency}
+                />
+            </View>
         </FormControl>
+        
+        <View style={styles.rulesContainer}>
+            <ForexRulesTable
+                takeProfitRules={takeProfitRules}
+                stopLossRules={stopLossRules}
+                onTakeProfitChange={setTakeProfitRules}
+                onStopLossChange={setStopLossRules}
+            />
+        </View>
+        
             <TouchableOpacity accessibilityLabel={localize('signup')} style={[styles.button, {backgroundColor: themeColor.buttons}]} onPress={handleSignUp}>
                 <Text bold size={'2xl'} aria-label={localize('signup')} >{localize('signup')}</Text>
             </TouchableOpacity>
@@ -173,6 +199,11 @@ const styles = StyleSheet.create({
         marginBottom: 24,
         alignSelf: 'center',
     },
+    logoContainer: {
+        marginBottom: 32,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     helperText: {
         paddingLeft: 10,
     },
@@ -180,7 +211,7 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
     },
     pickerContainer: {
-        marginBottom: 24,
+        marginBottom: 7,
         marginTop: 10,
         paddingLeft: 5,
         paddingRight: 5
@@ -190,6 +221,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     button: {
+        marginTop: 20,
         padding: 16,
         borderRadius: 6,
         alignItems: 'center',
@@ -197,6 +229,10 @@ const styles = StyleSheet.create({
     signin: {
         alignSelf: 'center',
         marginVertical: 24
+    },
+    rulesContainer: {
+        marginTop: 20,
+        marginBottom: 10,
     },
 });
 

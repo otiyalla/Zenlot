@@ -54,6 +54,7 @@ export default function ToolbarPlugin() {
   }, []);
 
   /*
+  TODO: Add bullet points and font size change to tool bar plugin
   const $updateToolbarList = useCallback(() => {
     const selection = $getSelection();
     if (!selection) return;

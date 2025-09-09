@@ -11,6 +11,8 @@ interface ModalComponentProps {
   isOpen: boolean;
   showHeader?: boolean;
   headerText?: string;
+  useRNModal?: boolean;
+  size?: "xs" | "sm" | "md" | "lg" | "full";
   onClose: () => void;
   footer: 
     {
@@ -20,7 +22,7 @@ interface ModalComponentProps {
   
 }
 
-export default function ModalComponent({  isOpen, onClose, showHeader, headerText, footer, children }: ModalComponentProps) {
+export default function ModalComponent({ useRNModal, size, isOpen, onClose, showHeader, headerText, footer, children }: ModalComponentProps) {
     const { localize } = useTranslate();
     const defaultFooter = [
         {
@@ -34,42 +36,43 @@ export default function ModalComponent({  isOpen, onClose, showHeader, headerTex
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            size="lg"
+            size={size ?? "lg"}
             avoidKeyboard
+            useRNModal={useRNModal}
         >
             <ModalBackdrop />
-                <ModalContent>
-                    <ModalHeader>
-                        {showHeader && (
-                            <Heading size="md" className="text-typography-950">
-                                {headerText}
-                                </Heading>
-                            )
-                        }
-                        <ModalCloseButton >
-                            <Icon as={CloseIcon} size="md"
-                            className="stroke-background-400 group-[:hover]/modal-close-button:stroke-background-700 group-[:active]/modal-close-button:stroke-background-900 group-[:focus-visible]/modal-close-button:stroke-background-900"/>
-                        </ModalCloseButton>
-                    </ModalHeader>
-                    <ModalBody>
-                        {children}
-                    </ModalBody>
-                  <ModalFooter>
-                    {(
-                        [ ...defaultFooter, ...footer].map((item, index) => (
-                            <Button
-                                key={index}
-                                onPress={item.onClick}
-                                variant={index === 0 ? 'outline' : 'solid'}
-                                action={index === 0 ? 'secondary' : 'primary'}
-                            >
-                                <ButtonText>{item.title}</ButtonText>
-                            </Button>
-                        ))
-                    )}
-                  </ModalFooter>
-                </ModalContent>
-              </Modal>
+            <ModalContent>
+                <ModalHeader>
+                    {showHeader && (
+                        <Heading size="md" className="text-typography-950">
+                            {headerText}
+                            </Heading>
+                        )
+                    }
+                    <ModalCloseButton >
+                        <Icon as={CloseIcon} size="md"
+                        className="stroke-background-400 group-[:hover]/modal-close-button:stroke-background-700 group-[:active]/modal-close-button:stroke-background-900 group-[:focus-visible]/modal-close-button:stroke-background-900"/>
+                    </ModalCloseButton>
+                </ModalHeader>
+                <ModalBody>
+                    {children}
+                </ModalBody>
+                <ModalFooter>
+                {(
+                    [ ...footer, ...defaultFooter].map((item, index, a) => (
+                        <Button
+                            key={index}
+                            onPress={item.onClick}
+                            variant={index === (a.length - 1) ? 'solid' : 'outline'}
+                            action={index === (a.length - 1) ? 'negative' : 'primary'}
+                        >
+                            <ButtonText>{item.title}</ButtonText>
+                        </Button>
+                    ))
+                )}
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
     </Center>
   )
 }

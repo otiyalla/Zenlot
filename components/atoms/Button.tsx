@@ -3,6 +3,7 @@ import { Button, View } from 'react-native';
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { StyleSheet } from "react-native";
+import { HStack } from '../ui';
 //TODO: Customize all your atoms and add your own styles
 type Props = ComponentProps<typeof Button> ;
 
@@ -12,8 +13,8 @@ export function ButtonComponent({ onPress, title, ...rest }: Props) {
     buttonContainer: {
       alignItems: 'center',
       justifyContent: 'center',
-      width: '100%',
-      padding: 10, 
+      //width: '100%',
+      //padding: 10, 
     },
     roundedButton: {
       borderRadius: 15,
@@ -23,17 +24,18 @@ export function ButtonComponent({ onPress, title, ...rest }: Props) {
   });
 
   return (
-    <View style={styles.buttonContainer}>
-      <View style={styles.roundedButton}>
-        <Button
-          title={title}
-          onPress={onPress}
-          {...rest}
-          accessibilityLabel={title}
-          color={Colors[colorScheme ?? 'light'].buttons}
-        />
+
+      <View style={styles.buttonContainer}>
+        <View style={styles.roundedButton}>
+          <Button
+            title={title}
+            onPress={onPress}
+            color={Colors[colorScheme ?? 'light'].buttons}
+            {...rest}
+            accessibilityLabel={title}
+          />
+        </View>
       </View>
-    </View>
   );
 }
 //TODO: Few app details

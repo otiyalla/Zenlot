@@ -1,5 +1,5 @@
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, type ErrorBoundaryProps} from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import '../global.css';
@@ -9,7 +9,7 @@ import Loading  from '@/components/atoms/Spinner';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {  AuthProvider } from '@/providers/AuthProvider';
 import { UserProvider } from '@/providers/UserProvider';
-
+import { Text, View } from 'react-native';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -18,31 +18,59 @@ export default function RootLayout() {
   });
 
   if (!loaded) {
-    // Async font loading only occurs in development.
-    <Loading />
-    return null;
+    return <Loading/>;
   }
   
   return (
-    <SafeAreaProvider>
-      <GluestackUIProvider mode={colorScheme as 'light' | 'dark' ?? 'light'} >
-       <AuthProvider>
-        <UserProvider>
+      
+        <SafeAreaProvider>
+          <GluestackUIProvider mode={colorScheme as 'light' | 'dark' ?? 'light'} >
+            <AuthProvider>
+              <UserProvider>
+                <Stack initialRouteName='(protected)'>
+                  <Stack.Screen name='(protected)' options={{
+                    headerShown: false,
+                    animation: 'none'
+                  }}/>
+                  <Stack.Screen name="(auth)" options={{ headerShown: false,
+                    title: 'Zenlot',
+                    animation: 'none',
+                  }} />
+                </Stack>
+                <StatusBar style='auto' />
+              </UserProvider>
+            </AuthProvider>
+          </GluestackUIProvider>
+        </SafeAreaProvider>
         
-          <Stack initialRouteName='(protected)'>
-            <Stack.Screen name='(protected)' options={{
-              headerShown: false,
-              animation: 'none'
-            }}/>
-            <Stack.Screen name="(auth)" options={{ headerShown: false,
-              title: 'Zenlot',
-              animation: 'none',
-            }} />
-          </Stack>
-          <StatusBar style='auto' />
-        </UserProvider>
-        </AuthProvider>
-      </GluestackUIProvider>
-    </SafeAreaProvider>
+  );
+}
+
+export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  return (
+    <View style={{ 
+      flex: 1, 
+      backgroundColor: "#001c34", 
+      justifyContent: 'center', 
+      alignItems: 'center',
+      padding: 20
+    }}>
+      <Text style={{ color: 'white', fontSize: 18, marginBottom: 20 }}>
+        App Error
+      </Text>
+      <Text style={{ color: 'white', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>
+        {error.message}
+      </Text>
+      <Text 
+        onPress={retry}
+        style={{ 
+          color: '#007AFF', 
+          fontSize: 16, 
+          textDecorationLine: 'underline' 
+        }}
+      >
+        Try Again
+      </Text>
+    </View>
   );
 }
