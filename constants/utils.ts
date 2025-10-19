@@ -160,6 +160,20 @@ export function formatNumberByLocale(number: number, language: keyof typeof lang
   }).format(number);
 }
 
+export function parseErrors(errors: {}[]): {errorFields: string[], errorMessage: {[key: string]: string}} {
+    const fields = new Set<string>();
+    const errorMessage: { [key: string]: string } = {};
+    errors.forEach((err: any) => {
+        if (err.path && err.path.length > 0) {
+            const field = err.path[0];
+            fields.add(field);
+            errorMessage[field] = err.message;
+        }
+    });
+    const errorFields = Array.from(fields);
+    return {errorFields, errorMessage};
+}
+
 
 export function getExchangeRate(
   baseCurrency: string,
@@ -186,14 +200,30 @@ export function formatPips(pips: number): string {
   return pips.toFixed(2);
 }
 
-export function formatDate(date: Date, language: keyof typeof languageKey): string {
+export function getSystemTimeZone(): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+export function localizeTimeZoneName(timeZone: string, language?: keyof typeof languageKey) {
+  const date = new Date();
+
+  const parts = new Intl.DateTimeFormat(languageKey[language ?? 'en'], {
+    timeZone,
+    timeZoneName: 'short',
+  }).formatToParts(date);
+
+  const tzPart = parts.find(p => p.type === 'timeZoneName');
+  return tzPart?.value || timeZone;
+}
+
+
+export function formatDate(date: Date | string, language?: keyof typeof languageKey, showTime?: boolean): string {
   const locale = !!language ? languageKey[language] : navigator.language;
   return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
-    month: '2-digit',
+    month: 'short',
     day: '2-digit',
-    //hour: '2-digit',
-    //minute: '2-digit',
-  }).format(date);
+    ...(showTime && { hour: '2-digit', minute: '2-digit'})
+  }).format(new Date(date));
 }
 

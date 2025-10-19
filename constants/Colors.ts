@@ -3,9 +3,6 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
-
 export const Colors = {
   light: {
     x: '#fff',
@@ -28,30 +25,24 @@ export const Colors = {
     danger: '#b40600',
     buttons: '#2D9CDB',
     buttonCancel: '#F98080',
-    buttonText: '#141414',
+    buttonText: '#F9FAFB',
     text: '#11181C',
+    invesetext: '#F9FAFB',
     lightText: '#585858',
-    tint: tintColorLight,
+    tint: '#0a7ea4',
     icon: '#687076',
     tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-    border: '5%',
+    tabIconSelected: '#0a7ea4',
     borderColor: '#ccc',
     placeholderTextColor: "#888",
     textBorderColor: '#ccc',
     link: '#0000FF',
+    placeholder: '#999999',
     inputBackground: '#F3F4F6', // Light background for inputs
     inputText: '#11181C', // Dark text color for inputs
     inputBorder: '#E5E7EB', // Light border color for inputs
     inputPlaceholderTextColor: '#9CA3AF', // Placeholder text color for inputs
     inputBorderColor: '#E5E7EB', // Border color for inputs
-    inputBorderWidth: 1, // Border width for inputs
-    inputBorderRadius: 10, // Border radius for inputs
-    inputPadding: 10, // Padding for inputs
-    inputMargin: 5, // Margin for inputs
-    inputHeight: 40, // Height for inputs
-    inputWidth: '100%', // Width for inputs
-    inputFontSize: 16, // Font size for inputs
   },
   dark: {
     googleBackground: '#4285f4',
@@ -76,27 +67,21 @@ export const Colors = {
     buttonCancel: '#8b0202',
     buttonText: '#1A1A1A',
     text: '#F9FAFB',
+    invesetext: '#11181C',
     lightText: '#9b9b9b',
-    tint: tintColorDark,
+    tint: '#fff',
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-    border: '5%',
+    tabIconSelected: '#fff',
     borderColor: '#0A2540',
     placeholderTextColor: "#888",
     textBorderColor: '#444',
     link: '#659EFB',
+    placeholder: '#999999',
     inputBackground: '#1F2937', // Dark background for inputs
     inputText: '#F9FAFB', // Light text color for inputs
     inputBorder: '#374151', // Dark border color for inputs
     inputPlaceholderTextColor: '#9CA3AF', // Placeholder text color for inputs
     inputBorderColor: '#374151', // Border color for inputs
-    inputBorderWidth: 1, // Border width for inputs
-    inputBorderRadius: 10, // Border radius for inputs
-    inputPadding: 10, // Padding for inputs
-    inputMargin: 5, // Margin for inputs
-    inputHeight: 40, // Height for inputs
-    inputWidth: '100%', // Width for inputs
-    inputFontSize: 16, // Font size for inputs
   },
 };

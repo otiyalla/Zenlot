@@ -4,7 +4,7 @@ import { useAuth } from "./AuthProvider";
 import { userApi } from "@/api/user";
 import { Socket, io } from "socket.io-client";
 import { getBaseUrl } from "@/api";
-
+import { getSystemTimeZone } from '@/constants'
 const UserContext = createContext({} as IUserContext);
 
 const UserProvider = ({ children }: {children: ReactNode}) => {
@@ -56,6 +56,8 @@ const UserProvider = ({ children }: {children: ReactNode}) => {
   }, [authUser?.id])
 
   const updateUser =  async (updateInfo: IUser) => {
+    const timezone = getSystemTimeZone();
+    updateInfo = { ...updateInfo, timezone };
     await update(updateInfo);
   }
 

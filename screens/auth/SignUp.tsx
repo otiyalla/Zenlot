@@ -5,10 +5,7 @@ import {
     TouchableOpacity,
     ScrollView,
 } from 'react-native';
-import Selection from '@/components/atoms/Selection';
-import { TextInputComponent } from '@/components/atoms/TextInput';
-import { TextComponent as Text} from '@/components/atoms/Text';
-import { SafeAreaViewComponent as SafeAreaView} from '@/components/atoms/SafeAreaView';
+import {SpinningLogo as Logo, TextInput, Text, SafeAreaView, Select, Button} from '@/components/atoms';
 import {
   FormControl,
   FormControlError,
@@ -18,18 +15,16 @@ import {
   FormControlHelperText,
   AlertCircleIcon,
 
-} from '@/components/ui'
+} from '@/components/design-system/ui'
 import { useTranslate } from '@/hooks/useTranslate';
-import Logo from '@/components/atoms/Logo';
-import PasswordInput from '@/components/molecules/PasswordInput';
-import ForexRulesTable from '@/components/molecules/ForexRulesTable';
+import { PasswordField } from '@/components/molecules';
+import {ForexRulesTable} from '@/components/organisms';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Colors, languageOptions, currencyOptions } from '@/constants';
+import { Colors, languageOptions, currencyOptions, parseErrors, getSystemTimeZone } from '@/constants';
 import { useAuth } from '@/providers/AuthProvider';
 import { router } from 'expo-router';
 import { signupValidation } from '@/validations';
 import { ForexRule } from "@/types";
-
 
 const SignUp: React.FC = () => {
     const [firstName, setFirstName] = useState<string>('');
@@ -39,12 +34,13 @@ const SignUp: React.FC = () => {
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
     const { localize } = useTranslate();
-    const [language, setLanguage] = useState<string>(localize('language.select_language'));
-    const [accountCurrency, setAccountCurrency] = useState<string>(localize('currency.select_account_currency'));
+    const [language, setLanguage] = useState<string>('');
+    const [accountCurrency, setAccountCurrency] = useState<string>('');
     const [takeProfitRules, setTakeProfitRules] = useState<ForexRule[]>([]);
     const [stopLossRules, setStopLossRules] = useState<ForexRule[]>([]);
     const themeColor = useColorScheme() === 'dark' ? Colors.dark : Colors.light;
     const { signup } = useAuth();
+    const [errorsFields, setErrorsFields] = useState<string[]>([]);
         
     const onPasswordChange: Dispatch<SetStateAction<string>> = (value) => {
         setPassword(value);
@@ -58,13 +54,18 @@ const SignUp: React.FC = () => {
         setLastName('');
         setConfirmPassword('');
         setError('');
+        setLanguage('');
+        setAccountCurrency('');
+        setTakeProfitRules([]);
+        setStopLossRules([]);
+        setErrorsFields([]);
     }
 
     const handleSignUp = async () => {
             const isMatch = password === confirmPassword;
             
             if (!isMatch) {
-                setError(localize('password_invalid'));
+                setError(localize('password.mismatch'));
                 return
             }else {
                 try {
@@ -75,28 +76,33 @@ const SignUp: React.FC = () => {
                         password,
                         language,
                         accountCurrency,
+                        timezone: getSystemTimeZone(),
                         rules: {
                             forex: {
-                                take_profit: takeProfitRules.map(rule => ({ pips: rule.pips })),
-                                stop_loss: stopLossRules.map(rule => ({ pips: rule.pips }))
+                                take_profit: takeProfitRules.map(rule => ({ pips: rule.pips })).sort((a, b) => a.pips - b.pips),
+                                stop_loss: stopLossRules.map(rule => ({ pips: rule.pips })).sort((a, b) => a.pips - b.pips)
                             }
                         }
                     }
                     const validated = signupValidation.safeParse(signup_info);
                     if (!validated.success) {
-                        console.error(validated.error.message);
-                        setError(localize('form_incomplete'));
-                        return;
+                      console.log('validation error', validated.error.message);
+                      const {errorFields, errorMessage} = parseErrors(JSON.parse(validated.error.message));
+                      setErrorsFields(errorFields);
+                      setError(localize('form_incomplete'));
+                      return;
                     }
                     signup(signup_info);
                     console.log('User sign up info:', signup_info);
                     resetForm();
 
                 } catch (error) {
-                    console.error('Sign In error:', error);
+                    console.error('Sign up error:', error);
                 }
             }
     };
+
+    
     return (
     <SafeAreaView>
         <ScrollView contentContainerStyle={styles.container}>
@@ -109,77 +115,87 @@ const SignUp: React.FC = () => {
                 isRequired={true}
                 isInvalid={!!error}
             > 
-            {!!error && 
-                <FormControlError style={styles.formError} >
-                    <FormControlErrorIcon as={AlertCircleIcon} />
-                    <FormControlErrorText accessibilityLabel={error} >{error}</FormControlErrorText>
-                </FormControlError>
-            }
-            <TextInputComponent
-                placeholder={localize('fname')}
-                aria-label={localize('fname')}
-                value={firstName}
-                onChangeText={setFirstName}
-                autoCapitalize="words"
-            />
-            <TextInputComponent
-                placeholder={localize('lname')}
-                aria-label={localize('lname')}
-                value={lastName}
-                onChangeText={setLastName}
-                autoCapitalize="words"
-            />
-            <TextInputComponent
-                placeholder={localize('email')}
-                aria-label={localize('email')}
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-            />
-            <PasswordInput
-                password={password}
-                onChange={onPasswordChange} 
-                placeholder={localize('password')}        
-            />
-            <FormControlHelper accessibilityLabel={localize('password_rule')}>
-                <FormControlHelperText accessibilityLabel={localize('password_rule')} style={styles.helperText}>
-                    {localize('password_rule')}
-                </FormControlHelperText>
-            </FormControlHelper>
-            <PasswordInput
-                password={confirmPassword}
-                onChange={setConfirmPassword} 
-                placeholder={localize('confirm_password')}        
-            />
-            <View style={styles.pickerContainer}>
-                <Selection
+                {!!error && 
+                    <FormControlError style={styles.formError} >
+                        <FormControlErrorIcon as={AlertCircleIcon} fill={themeColor.invesetext}  />
+                        <FormControlErrorText accessibilityLabel={error} >{error}</FormControlErrorText>
+                    </FormControlError>
+                }
+                <TextInput
+                    placeholder={localize('fname')}
+                    aria-label={localize('fname')}
+                    value={firstName}
+                    onChangeText={setFirstName}
+                    autoCapitalize="words"
+                    error={errorsFields.includes('fname')}
+                />
+                <TextInput
+                    placeholder={localize('lname')}
+                    aria-label={localize('lname')}
+                    value={lastName}
+                    onChangeText={setLastName}
+                    autoCapitalize="words"
+                    error={errorsFields.includes('lname')}
+                />
+                <TextInput
+                    placeholder={localize('email')}
+                    aria-label={localize('email')}
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    error={errorsFields.includes('email')}
+                />
+                <PasswordField
+                    value={password}
+                    onChangeText={onPasswordChange} 
+                    placeholder={localize('password.password')}
+                    error={errorsFields.includes('password')}
+                />
+                <FormControlHelper accessibilityLabel={localize('password.rule')}>
+                    <FormControlHelperText accessibilityLabel={localize('password.rule')} style={styles.helperText}>
+                        {localize('password.rule')}
+                    </FormControlHelperText>
+                </FormControlHelper>
+                <PasswordField
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword} 
+                    placeholder={localize('password.confirm')}
+                    error={confirmPassword !== password}
+                />
+                <Select
                     options={languageOptions}
                     selectedValue={language}
                     onValueChange={setLanguage}
+                    placeholder={localize('language.select_language')}
+                    error={errorsFields.includes('language')}
+
                 />
-            </View>
-            <View style={styles.pickerContainer}>
-                <Selection
+                <Select
                     options={currencyOptions}
                     selectedValue={accountCurrency}
                     onValueChange={setAccountCurrency}
+                    placeholder={localize('currency.select_account_currency')}
+                    error={errorsFields.includes('accountCurrency')}
+                />
+            </FormControl>
+        
+            <View style={styles.rulesContainer}>
+                <ForexRulesTable
+                    takeProfitRules={takeProfitRules}
+                    stopLossRules={stopLossRules}
+                    onTakeProfitChange={setTakeProfitRules}
+                    onStopLossChange={setStopLossRules}
                 />
             </View>
-        </FormControl>
-        
-        <View style={styles.rulesContainer}>
-            <ForexRulesTable
-                takeProfitRules={takeProfitRules}
-                stopLossRules={stopLossRules}
-                onTakeProfitChange={setTakeProfitRules}
-                onStopLossChange={setStopLossRules}
+            <Button
+                title={localize('signup')}
+                onPress={handleSignUp}
+                variant='primary'
+                size='lg'
+                accessibilityLabel={localize('signup')}
+                testID='sign-up-button'
             />
-        </View>
-        
-            <TouchableOpacity accessibilityLabel={localize('signup')} style={[styles.button, {backgroundColor: themeColor.buttons}]} onPress={handleSignUp}>
-                <Text bold size={'2xl'} aria-label={localize('signup')} >{localize('signup')}</Text>
-            </TouchableOpacity>
             <TouchableOpacity style={styles.signin} onPress={() => router.replace('/(auth)')}>
                 <Text aria-label={localize('signin')} style={{color: themeColor.link }} size='lg'>
                     {localize('signin')}
@@ -192,7 +208,7 @@ const SignUp: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 24,
+        padding: 20,
         justifyContent: 'center',
     },
     title: {
@@ -209,22 +225,6 @@ const styles = StyleSheet.create({
     },
     formError: {
         paddingLeft: 5,
-    },
-    pickerContainer: {
-        marginBottom: 7,
-        marginTop: 10,
-        paddingLeft: 5,
-        paddingRight: 5
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 8,
-    },
-    button: {
-        marginTop: 20,
-        padding: 16,
-        borderRadius: 6,
-        alignItems: 'center',
     },
     signin: {
         alignSelf: 'center',

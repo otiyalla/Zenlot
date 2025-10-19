@@ -6,6 +6,7 @@ export interface IAuthContext {
     user: IUser | null;
     login: (login_info: ILoginInfo) => Promise<void>;
     logout: () => void;
+    refreshAuthToken: () => void;
     signup: (signup_info: ISignUp) => void;
     setUser: (user: IUser) => void;
     resetPassword: (email: string) => Promise<string>;
@@ -18,6 +19,7 @@ export interface ISignUp {
     password: string;
     language: string;
     accountCurrency: string;
+    timezone: string;
     rules: {
         forex: {
             take_profit: { pips: number}[];

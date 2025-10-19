@@ -1,11 +1,9 @@
-import resetpassword from '@/app/(auth)/resetpassword';
 import { api } from '.';
 import { ISignUp } from '@/types';
 
 export const signinApi = {
     async signin(data: { email: string; password: string }) {
         try {
-            
             const res =  await api.create('auth/signin', data);
             return res;
         } catch (error) {
@@ -24,15 +22,18 @@ export const signinApi = {
         return res;
     },
 
-    async signout() {
-        console.log('signout called');
-        //return await api.delete('signout');
+    
+    async refreshToken(refreshToken: string) {
+        const data = { refresh_token: refreshToken };
+        const res = await api.create(`auth/refresh`, data);
+        return res;
     },
 
-    async refreshToken() {
-        return await api.read('refresh-token');
+     async signout(userId?: number) {
+        const res = await api.create(`auth/signout`, {userId});
+        return res;
     },
-
+    
     async resetpassword(email: string) {
         console.log('the email: ', email)
         const res = await api.create(`auth/resetpassword`, email);

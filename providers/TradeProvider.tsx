@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect, use } from 'react';
 import { ITrade, TradeContextType, TradeEntryState } from '@/types';
 import { tradeApi } from '@/api/trade';
-
+import { useAuth } from "./AuthProvider";
 
 // Default state for a new trade entry
 const defaultTrade: ITrade = {
@@ -24,7 +24,7 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
     const [trade, setTrade] = useState<TradeEntryState | ITrade>(defaultTrade);
     const [tradeHistory, setTradeHistory] = useState<TradeEntryState[]>([]);
     const { getTrades, getPrice, deleteTrade: tradeDelete, createTrade, updateTrade } = tradeApi;
-  
+    const { refreshAuthToken } = useAuth();
 
     useEffect(() => {
         refreshTrades();
@@ -35,6 +35,7 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
         try {
             const trades = await getTrades();
             setTradeHistory(trades);
+            await refreshAuthToken();
         } catch (error) {
             console.error('Failed to refresh trades:', error);
         }
@@ -48,7 +49,7 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
             const newTrade = await createTrade(trade);
             console.log('The new trade:', newTrade);
             setTradeHistory((prev) => {
-                return [ ...prev, newTrade];
+                return [ newTrade, ...prev];
             });
             resetTrade();
         } catch (error) {

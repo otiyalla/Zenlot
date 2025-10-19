@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, screen, within, waitFor } from '@testing-library/react-native';
-import Selection from '@/components/atoms/Selection';
+import Selection from '@/components/atoms/Select';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 
 const options = [

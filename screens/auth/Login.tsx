@@ -5,8 +5,7 @@ import {
     FormControlErrorText,
     FormControlErrorIcon,
     AlertCircleIcon
-} from '@/components/ui'
-import { FontAwesome, FontAwesome6, AntDesign } from '@expo/vector-icons';
+} from '@/components/design-system/ui'
 import {
     View,
     TouchableOpacity,
@@ -15,15 +14,12 @@ import {
 } from 'react-native';
 import { useAuth } from '@/providers/AuthProvider';
 import { Link } from 'expo-router';
-import Logo from '@/components/atoms/Logo';import { TextInputComponent } from '@/components/atoms/TextInput';
-import { TextComponent as Text } from '@/components/atoms/Text';
-import { SafeAreaViewComponent as SafeAreaView } from '@/components/atoms/SafeAreaView';
+import {SpinningLogo as Logo, TextInput, Text, Button, Icon, SafeAreaView } from '@/components/atoms';
 import { useTranslate } from '@/hooks/useTranslate';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
-import PasswordInput from '@/components/molecules/PasswordInput';
+import { PasswordField } from '@/components/molecules';
 import { signinValidation } from '@/validations';
-
 
 export default function Login() {
     const { login, isAuthenticated } = useAuth();
@@ -88,19 +84,67 @@ export default function Login() {
         // Example: Call your Apple Sign-In API
     };
 
+   const SOCIALS_LOGINS = [
+        { 
+            library: 'fontawesome6',
+            onPress: handleGoogleSignIn,
+            style: [styles.socialButton, { backgroundColor: themeColor.googleBackground, borderColor: themeColor.logoBorder  }],
+            accessibilityLabel: 'google icon',
+            name: 'google',
+            size: 24,
+            color: themeColor.google
+        },
+        { 
+            library: 'fontawesome6',
+            onPress: handleFacebookSignIn,
+            style: [styles.socialButton, { backgroundColor: themeColor.socialFacebook }],
+            accessibilityLabel: 'facebook icon',
+            name: 'facebook',
+            size: 24,
+            color: themeColor.facebook
+        },
+        { 
+            library: 'fontawesome6',
+            onPress: handleTwitterSignIn,
+            style: [styles.socialButton, { backgroundColor: themeColor.socialTwitter }],
+            accessibilityLabel: 'x icon previously twitter',
+            name: 'x',
+            size: 24,
+            color: themeColor.x
+        },
+        { 
+            library: 'fontawesome6',
+            onPress: handleTelegramSignIn,
+            style: [styles.socialButton, { backgroundColor: themeColor.socialTelegram }],
+            accessibilityLabel: 'telegram icon',
+            name: 'telegram',
+            size: 24,
+            color: themeColor.telegram
+        },
+        {
+            library: 'fontawesome6',
+            onPress: handleAppleSignIn,
+            style: [styles.socialButton, { backgroundColor: themeColor.socialApple }],
+            accessibilityLabel: 'apple icon',
+            name: 'apple',
+            size: 24,
+            color: themeColor.apple
+        }
+    ]
+
     return (
         <SafeAreaView>
             <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
                 <View style={styles.logoContainer}>
                     <Logo/>              
                 </View>
-                <Text style={styles.title} aria-label={localize('signin')} bold size={'3xl'} >{localize('signin')}</Text>
+                <Text style={styles.title} aria-label={localize('signin')} bold size={'lg'} >{localize('slogan')}</Text>
                 <FormControl 
                     size='md'
                     isRequired={true}
                     isInvalid={!!error}
                 >
-                    <TextInputComponent
+                    <TextInput
                         value={email}
                         onChangeText={onEmailChange}
                         placeholder={localize('email')}
@@ -109,47 +153,44 @@ export default function Login() {
                         autoCorrect={false}
                         aria-label={localize('email')}
                     />
-                    <PasswordInput
-                        password={password}
-                        onChange={onPasswordChange} 
-                        placeholder={localize('password')}        
+                    <PasswordField
+                        value={password}
+                        onChangeText={onPasswordChange} 
+                        placeholder={localize('password.password')}        
                     />
                         
                     {!!error && 
                         <FormControlError>
-                            <FormControlErrorIcon as={AlertCircleIcon} />
+                            <FormControlErrorIcon as={AlertCircleIcon} fill={themeColor.invesetext} />
                             <FormControlErrorText accessibilityLabel={error} >{error}</FormControlErrorText>
                         </FormControlError>
                     }
                     <TouchableOpacity style={styles.forgotButton}>
                         <Link href="/(auth)/resetpassword" style={{ textDecorationLine: 'none'}}>
-                            <Text aria-label={localize('reset_password')} style={{color: themeColor.buttons }} size='md'>{localize('reset_password')}</Text>
+                            <Text aria-label={localize('password.reset')} style={{color: themeColor.buttons }} size='md'>{localize('password.reset')}</Text>
                         </Link>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.signInButton, {backgroundColor: themeColor.buttons}]} onPress={handleSignIn}>
-                        <Text aria-label={localize('signin')} bold size='2xl'>{localize('signin')}</Text>
-                    </TouchableOpacity>
+                    <Button
+                        onPress={handleSignIn}
+                        title={localize('signin')}
+                        variant='primary'
+                        size='lg'
+                        accessibilityLabel={localize('signin')}
+                        testID='sign-in-button'
+                    />
                     <View style={styles.orContainer}>
                         <View style={[styles.line, { backgroundColor: themeColor.text }]} />
                         <Text aria-label={localize('signin_with')} style={styles.orText}>&nbsp;{localize('signin_with')}&nbsp;</Text>
                         <View style={[styles.line, { backgroundColor: themeColor.text }]} />
                     </View>
                     <View style={styles.socialContainer}>
-                        <TouchableOpacity onPress={handleGoogleSignIn} accessibilityLabel='google icon' style={[styles.socialButton, { backgroundColor: themeColor.googleBackground, borderColor: themeColor.logoBorder }]}>
-                            <AntDesign accessibilityLabel='google' name="google" size={24} color={themeColor.google} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleFacebookSignIn} accessibilityLabel='facebook icon' style={[styles.socialButton, { backgroundColor: themeColor.socialFacebook }]}>
-                            <FontAwesome accessibilityLabel='facebook' name="facebook" size={24} color={themeColor.facebook}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleTwitterSignIn} accessibilityLabel='x icon' style={[styles.socialButton, { backgroundColor: themeColor.socialTwitter }]}>
-                            <FontAwesome6 accessibilityLabel='x previously twitter' name="x" size={24} color={themeColor.x} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleTelegramSignIn} accessibilityLabel='telegram icon' style={[styles.socialButton, { backgroundColor: themeColor.socialTelegram }]}>
-                            <FontAwesome accessibilityLabel='telegram' name="telegram" size={24} color={themeColor.telegram} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleAppleSignIn} accessibilityLabel='apple icon' style={[styles.socialButton, { backgroundColor: themeColor.socialApple }]}>
-                            <FontAwesome accessibilityLabel='apple' name="apple" size={24} color={themeColor.apple} />
-                        </TouchableOpacity>
+                        {
+                            SOCIALS_LOGINS.map((social, index) =>(
+                                <TouchableOpacity key={`${social.name}-${index}`} onPress={social.onPress} accessibilityLabel={social.accessibilityLabel} style={social.style}>
+                                    <Icon library={social.library as 'fontawesome6'} accessibilityLabel={social.accessibilityLabel} name={social.name} size={social.size} color={social.color} />
+                                </TouchableOpacity>
+                            ))
+                        }
                     </View>
                     <View style={styles.signupContainer}>
                         <Text aria-label={localize('no_account')} size='md'>
@@ -169,12 +210,12 @@ export default function Login() {
 
 const styles = StyleSheet.create({
     scrollContent: {
-        alignItems: 'center',
-        paddingVertical: 40,
-        paddingHorizontal: 24,
+        padding: 20,
+        justifyContent: 'center',
     },
     title: {
         marginBottom: 20,
+        alignSelf: 'center',
     },
     logoContainer: {
         marginBottom: 32,
@@ -183,13 +224,6 @@ const styles = StyleSheet.create({
     },
     forgotButton: {
         alignSelf: 'flex-end',
-        marginBottom: 24,
-    },
-    signInButton: {
-        height: 48,
-        borderRadius: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
         marginBottom: 24,
     },
     orContainer: {

@@ -1,17 +1,30 @@
 
 import React from 'react';
-import {View, Text} from 'react-native';
-import { SafeAreaViewComponent as SafeAreaView } from '@/components/atoms/SafeAreaView';
+import { HistoryPage } from '@/components/pages';
 
-//TODO: History - Trading history, Jornel. success and performance metrics
+//TODO: History - Trading history, Journal, success and performance metrics
 
 export default function History() {
+  const handleViewTrade = (tradeId: string) => {
+    // Navigate to trade details
+    console.log('View trade:', tradeId);
+  };
+
+  const handleExportHistory = () => {
+    // Export trade history
+    console.log('Export history');
+  };
+
+  const handleFilterTrades = (filter: string) => {
+    // Filter trades
+    console.log('Filter trades:', filter);
+  };
+
   return (
-    <SafeAreaView>
-      <View>
-        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>History</Text>
-        <Text style={{ marginTop: 8 }}>This is the history screen where you can view your trading history and performance metrics.</Text>
-      </View>
-    </SafeAreaView>
+    <HistoryPage
+      onViewTrade={handleViewTrade}
+      onExportHistory={handleExportHistory}
+      onFilterTrades={handleFilterTrades}
+    />
   );
 }

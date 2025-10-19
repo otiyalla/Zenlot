@@ -22,6 +22,9 @@ export const languageKey = {
 };
 
 export const languageOptions = [
-    { label: 'language.english', value: 'en' },
-    { label: 'language.french', value: 'fr' },
+    { label: 'language.en', value: 'en' },
+    { label: 'language.fr', value: 'fr' },
 ];
+
+export type LanguageOptionType = 'en' | 'fr';
+export const LanguageOptionEnum = ['en', 'fr'] as const;

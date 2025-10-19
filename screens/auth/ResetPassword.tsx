@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { TextInputComponent } from '@/components/atoms/TextInput';
-import { TextComponent as Text } from '@/components/atoms/Text';
-import { SafeAreaViewComponent as SafeAreaView } from '@/components/atoms/SafeAreaView';
-import { ButtonComponent as Button } from '@/components/atoms/Button';
-import Logo from '@/components/atoms/Logo';
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import {SpinningLogo as Logo, TextInput, Text, Button, SafeAreaView } from '@/components/atoms';
 import { useTranslate } from '@/hooks/useTranslate';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
-import { FormControl, FormControlError, FormControlErrorText, FormControlErrorIcon, AlertCircleIcon } from '@/components/ui';
+import { FormControl, FormControlError, FormControlErrorText, FormControlErrorIcon, AlertCircleIcon } from '@/components/design-system/ui';
 import { router } from 'expo-router';
 import { useAuth } from '@/providers/AuthProvider';
 
@@ -29,15 +25,11 @@ const ResetPassword: React.FC = () => {
         }
         setLoading(true);
         try {
-            //TODO: Implement password reset logic 
-            // Replace with your password reset logic (API call)
-            // await api.resetPassword(email);
-            //Alert.alert('Success', 'Password reset instructions sent to your email.');
-            console.log('password reset sent:', email);
+            
             const success = await resetPassword(email);
-            console.log("reset done: ", success);
             setEmail('');
             setError('');
+            Alert.alert(success);
         } catch (error) {
             console.error('Error', 'Failed to send reset instructions. ', error);
         } finally {
@@ -50,13 +42,13 @@ const ResetPassword: React.FC = () => {
             <View style={styles.logoContainer}>
                 <Logo/>              
             </View>
-            <Text bold size={'3xl'} style={styles.title}>{localize('reset_password')}</Text>
+            <Text bold size={'3xl'} style={styles.title}>{localize('password.reset')}</Text>
             <FormControl
                 size='md'
                 isRequired={true}
                 isInvalid={!!error}
             >
-                <TextInputComponent
+                <TextInput
                     placeholder={localize('email')}
                     aria-label={localize('email')}
                     autoCapitalize="none"

@@ -1,19 +1,16 @@
 import { Image } from 'expo-image';
 import { ScrollView, Platform, StyleSheet, View, Text } from 'react-native';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ButtonComponent } from '@/components/atoms/Button';
-import { TextInputComponent } from '@/components/atoms/TextInput';
-import {SafeAreaViewComponent as SafeAreaView}  from '@/components/atoms/SafeAreaView';
-import  Search  from '@/components/atoms/Search';
-import Selection from '@/components/atoms/Selection';
-import Loading from '@/components/atoms/Spinner';
+import Collapsible  from '@/components/molecules/Legacy/Collapsible';
+import ExternalLink  from '@/components/molecules/Legacy/ExternalLink';
+import ParallaxScrollView from '@/components/templates/Legacy/ParallaxScrollView';
+import {SafeAreaView, Select, TextInput, Button}  from '@/components/atoms';
+import  Search  from '@/components/atoms/Legacy/Search';
+import {Loading} from '@/components/atoms/Spinner';
 //import TradeEntry from '@/components/orgnisms/TradeEntry';
 import { useTranslate } from '@/hooks/useTranslate';
 import { useState } from 'react';
-import TextEditor from '@/components/TextEditor';
+import {TextEditor} from '@/components/organisms';
 
 export default function forexHome() {
   const { localize } = useTranslate();
@@ -22,13 +19,13 @@ export default function forexHome() {
    <SafeAreaView>
         <View>
         <Text>Forex Home</Text>
-        <ButtonComponent
+        <Button
           title="Forex"
           onPress={() => {
             console.log('Forex button pressed');
           }}
         />
-        <TextInputComponent
+        <TextInput
           placeholder="Text input"
           onChangeText={(text) => console.log(text)}
           style={{ backgroundColor: 'green'}}  
@@ -43,18 +40,19 @@ export default function forexHome() {
 
 
 
-        <Selection
-          description="Select a language"
+        <Select
+          placeholder="Select a language"
           options={[{ label: 'USD', value: 'usd' }, { label: 'EUR', value: 'eur' }, { label: 'GBP', value: 'gbp' }]}
           onValueChange={(value) => console.log("selection", value)}
         />
 
         <Loading />
-        <Search placeholderText='seraching ...' searchResult={() => {}}/>
 
       
 
-        {/* <TradeEntry 
+        {/* 
+        <Search placeholderText='seraching ...' searchResult={() => {}}/>
+        <TradeEntry 
           onSubmit={(trade) => {
           console.log("Trade submitted", trade);
         }} /> */}

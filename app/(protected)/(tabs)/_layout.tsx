@@ -1,10 +1,9 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
-
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
+import { HapticTab } from '@/components/atoms/HapticTab';
+import { Icon } from '@/components/atoms';
+import { TabBarBackground }  from '@/components/atoms';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useTranslate } from '@/hooks/useTranslate';
@@ -21,40 +20,52 @@ export default function TabLayout() {
           tabBarActiveTintColor: Colors[colorScheme ?? 'light'].primary,
           tabBarInactiveTintColor: Colors[colorScheme ?? 'light'].secondary,
           tabBarButton: HapticTab,
-          tabBarBackground: TabBarBackground,
+          //tabBarBackground: TabBarBackground,
           tabBarStyle: Platform.select({
             ios: {
               // Use a transparent background on iOS to show the blur effect
               position: 'absolute',
+              backgroundColor: Colors[colorScheme ?? 'light'].background,
+              borderTopColor: Colors[colorScheme ?? 'light'].borderColor,
+              borderTopWidth: 1
             },
-            default: {},
+            android: {
+              backgroundColor: Colors[colorScheme ?? 'light'].background,
+              borderTopColor: Colors[colorScheme ?? 'light'].borderColor,
+              borderTopWidth: 1,
+            },
+            default: {
+              backgroundColor: Colors[colorScheme ?? 'light'].background,
+              borderTopColor: Colors[colorScheme ?? 'light'].borderColor,
+              borderTopWidth: 1,
+            },
           }),
         }}>
         <Tabs.Screen
           name="index"
           options={{
             title: localize('home'),
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+            tabBarIcon: ({ color }) => <Icon size={24} name="house" color={color} />,
           }}
         />
         <Tabs.Screen
           name="journal"
           options={{
             title: localize('journals'),
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="book.fill" color={color} />,
+            tabBarIcon: ({ color }) => <Icon size={24} name="book" color={color} />,
           }}
         />
         <Tabs.Screen
           name="history"
           options={{
             title: localize('history'),
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="clock.fill" color={color} />,
+            tabBarIcon: ({ color }) => <Icon size={24} name="rotate-left" color={color} />,
           }}
           listeners={{ 
             tabPress: (e) => {
               // Prevent default action
               console.log('History tab pressed:', e);
-              e.preventDefault();
+              //e.preventDefault();
               // Redirect user to login page
 
             },
@@ -64,7 +75,7 @@ export default function TabLayout() {
           name="profile"
           options={{
             title: localize('profile'),
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+            tabBarIcon: ({ color }) => <Icon size={24} name="user" color={color} />,
           }}
         />
       </Tabs>

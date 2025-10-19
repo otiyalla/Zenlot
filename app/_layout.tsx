@@ -4,12 +4,12 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import '../global.css';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-import Loading  from '@/components/atoms/Spinner';
+import { GluestackUIProvider } from '@/components/design-system/ui';
+import { Loading }  from '@/components/atoms/Spinner';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {  AuthProvider } from '@/providers/AuthProvider';
 import { UserProvider } from '@/providers/UserProvider';
-import { Text, View } from 'react-native';
+import { SafeAreaView, Text } from '@/components/atoms';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -22,9 +22,8 @@ export default function RootLayout() {
   }
   
   return (
-      
         <SafeAreaProvider>
-          <GluestackUIProvider mode={colorScheme as 'light' | 'dark' ?? 'light'} >
+          <GluestackUIProvider mode={colorScheme as 'light' | 'dark'} >
             <AuthProvider>
               <UserProvider>
                 <Stack initialRouteName='(protected)'>
@@ -48,9 +47,8 @@ export default function RootLayout() {
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   return (
-    <View style={{ 
+    <SafeAreaView style={{ 
       flex: 1, 
-      backgroundColor: "#001c34", 
       justifyContent: 'center', 
       alignItems: 'center',
       padding: 20
@@ -71,6 +69,6 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
       >
         Try Again
       </Text>
-    </View>
+    </SafeAreaView>
   );
 }

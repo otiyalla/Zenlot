@@ -46,3 +46,6 @@ coverage/
 
 app-example
 .package-lock.json
+
+# Misc
+todo.md

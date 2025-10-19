@@ -1,14 +1,15 @@
 import { Stack } from 'expo-router';
-import React from 'react';
+import { useTranslate } from '@/hooks/useTranslate';
 
 export default function TabLayout() {
+  const { localize } = useTranslate();
 
   return (
     <Stack>
       <Stack.Screen
         name="index"
         options={{
-          title: 'Login',
+          title: localize('login'),
           headerShown: false,
           animation: 'none'
         }}
@@ -17,14 +18,14 @@ export default function TabLayout() {
       <Stack.Screen
         name="signup"
         options={{
-          title: 'Sign Up',
+          title: localize('signup'),
           headerShown: false,
         }}
       />
       <Stack.Screen
         name="resetpassword"
         options={{
-          title: 'Password Reset',
+          title: localize('password.reset'),
           headerShown: false,
         }}
       />
