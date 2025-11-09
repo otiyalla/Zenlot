@@ -5,7 +5,7 @@ import { useTranslate } from '@/hooks/useTranslate';
 import { TradeEntryForm } from '@/components/organisms'
 import { useTrade } from '@/providers/TradeProvider';
 import { TextEditor } from '@organisms/Editor';
-import { tradeValidation } from '@/validations';
+import { createTradeValidation } from '@/validations';
 import { z } from 'zod';
 
 interface TradeEntryProps {
@@ -22,7 +22,7 @@ const ModalEntry: React.FC<TradeEntryProps> = ({ isOpen, setIsOpen }) => {
     const handleConfirm = () => {
         
         try {
-            const validated = tradeValidation.parse(trade);
+            const validated = createTradeValidation.parse(trade);
             submitTrade(validated);
             handleCancel();
         } catch (error) {

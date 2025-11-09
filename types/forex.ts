@@ -14,36 +14,31 @@ export interface ForexTrade {
     exit?: ExitProps;
     createdAt: Date;
 }
-/*
-export interface TradeEntryState {
+export interface ITrade {
     symbol: string;
     entry: number;
     lot: number;
     pips: number;
     execution: 'buy' | 'sell';
-    exchangeRate: number;
-    stopLoss: ExitProps;
-    takeProfit: ExitProps;
     editorState?: string | null;
     plainText?: string | null;
-    status?: 'open' | 'close' | 'closed' | 'reached_tp' | 'reached_sl' | 'pending' | 'closed_in_profit' | 'closed_in_loss';
-    [key: string]: any; // For extensibility
-}
-*/
-export interface TradeEntryState {
-    id: number; 
-    symbol: string;
-    entry: number;
-    lot: number;
-    pips: number;
-    execution: 'buy' | 'sell';
-    timestamp: string;
     exchangeRate: number;
     stopLoss: ExitProps;
     takeProfit: ExitProps;
-    editorState?: string | null;
-    plainText?: string;
-    status?: 'open' | 'close' | 'closed' | 'reached_tp' | 'reached_sl' | 'pending' | 'closed_in_profit' | 'closed_in_loss';
+}
+
+export type TradeStatus = 'open' | 'close' | 'closed' | 'reached_tp' | 'reached_sl' | 'pending' | 'closed_in_profit' | 'closed_in_loss';
+
+export interface TradeEntryState extends ITrade {    
+    id: number; 
+    createdAt: Date | string;
+    updatedAt: Date | string;
+    tags?: string[];
+    status: TradeStatus;
+    closedAt?: Date | string,
+    closedPrice?: number,
+    closedExchangeRate?: number,
+    closedReason?: string,
     [key: string]: any; // For extensibility
 }
 
@@ -89,8 +84,6 @@ export interface PriceFeedData {
     date: string;
 }
 
-export type ITrade = Omit<TradeEntryState, 'id' | 'timestamp'>;
-
 // Define the context value type
 
 export interface TradeContextType {
@@ -100,7 +93,9 @@ export interface TradeContextType {
     submitTrade: (validated: TradeEntryState | ITrade) => void;
     deleteTrade: (id: number) => void;
     duplicateTrade: (id: number) => void;
-    editTrade: (id: number, update: TradeEntryState | ITrade) => void;
+    editTrade: (id: number, update: TradeEntryState ) => void;
     refreshTrades: () => void;
+    currentRate: (symbol: string) => Promise<{ask: number, open: number, bid: number} | undefined>;
+    getAnalysis: (analysis_type: string) => {trades: number, gain: number, loss: number, net: number}
     setTrade: React.Dispatch<React.SetStateAction<TradeEntryState | ITrade>>
 }

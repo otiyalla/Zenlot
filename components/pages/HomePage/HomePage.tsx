@@ -7,7 +7,7 @@ import { useTranslate } from '@/hooks/useTranslate';
 import { useNetwork } from '@/hooks/useNetwork';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
-import { tradeValidation } from '@/validations';
+import { createTradeValidation } from '@/validations';
 import { useTrade } from '@/providers/TradeProvider';
 import { parseErrors } from '@/constants/utils';
 import { z } from 'zod';
@@ -48,7 +48,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   const handleConfirm = () => {
     try {
-        const validated = tradeValidation.parse(trade);
+        const validated = createTradeValidation.parse(trade);
         submitTrade(validated);
         handleCloseTradeModal();
     } catch (error) {

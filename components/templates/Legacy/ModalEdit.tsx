@@ -5,7 +5,7 @@ import { useTranslate } from '@/hooks/useTranslate';
 import { TradeEntryForm } from '@/components/organisms'
 import { useTrade } from '@/providers/TradeProvider';
 import { TextEditor } from '@/components/organisms/Editor';
-import { tradeValidation } from '@/validations';
+import { updateTradeValidation } from '@/validations';
 import { z } from 'zod';
 
 interface TradeEntryProps {
@@ -28,8 +28,10 @@ const ModalEdit: React.FC<TradeEntryProps> =  ({ isOpen, setIsOpen }) => {
   
     const handleConfirm = useCallback(() => {
         try {
-            const validated = tradeValidation.parse(currentTrade);
-            editTrade(currentTrade.id, validated);
+            const validated = updateTradeValidation.parse(currentTrade);
+            //const validated = createTradeValidation.parse(currentTrade);
+            // Replace 'id' with the correct identifier property, e.g., 'tradeId'
+            editTrade(validated.id, validated);
             handleCancel();
         } catch (error) {
             if (error instanceof z.ZodError) {
@@ -41,7 +43,7 @@ const ModalEdit: React.FC<TradeEntryProps> =  ({ isOpen, setIsOpen }) => {
             }
             console.error('trade entry error:', error);
         }
-    }, [currentTrade?.id, editTrade, handleCancel]);
+    }, [currentTrade, editTrade, handleCancel]);
 
     const handleShow = useCallback(() => {
         setShow(prev => !prev);

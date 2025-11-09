@@ -8,7 +8,8 @@
       "@pages/*": ["./components/pages/*"],
       "@organisms/*": ["./components/organisms/*"],
       "@templates/*": ["./components/templates/*"],
-      "@molecules/*": ["./components/molecules/*"]
+      "@molecules/*": ["./components/molecules/*"],
+      "@atoms/*": ["./components/atoms/*"]
     },
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",

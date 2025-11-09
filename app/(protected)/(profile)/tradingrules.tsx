@@ -14,8 +14,8 @@ import { router } from 'expo-router';
 export default function UserInfoSection() {
     const { user, update } = useUser();
     const { localize } = useTranslate();
-    const colorScheme = useColorScheme();
-    const theme = Colors[colorScheme ?? 'light'];
+    const colorScheme = useColorScheme() as 'light' | 'dark';
+    const theme = Colors[colorScheme];
 
     const { togglePipValue } = user;
     const [ togglePips, setTogglePips ] = useState(togglePipValue || false);

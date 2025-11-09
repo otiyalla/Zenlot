@@ -1,11 +1,13 @@
 
 import React from 'react';
 import { HistoryPage } from '@/components/pages';
+import { useTrade } from '@/providers/TradeProvider';
 
 //TODO: History - Trading history, Journal, success and performance metrics
 
 export default function History() {
-  const handleViewTrade = (tradeId: string) => {
+  const { tradeHistory } = useTrade();
+  const handleViewTrade = (tradeId: number) => {
     // Navigate to trade details
     console.log('View trade:', tradeId);
   };
@@ -22,6 +24,7 @@ export default function History() {
 
   return (
     <HistoryPage
+      trades={tradeHistory}
       onViewTrade={handleViewTrade}
       onExportHistory={handleExportHistory}
       onFilterTrades={handleFilterTrades}

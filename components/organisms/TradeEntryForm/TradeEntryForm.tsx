@@ -38,9 +38,8 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
   const [entry, setEntry] = useState<string>(entryPrice ? entryPrice.toString() : '');
   const { risk, reward } = getRatio(stopLoss.pips, takeProfit.pips);
   const execution = getExecutionType(Number(entryPrice), stopLoss.value, takeProfit.value);
-  
   const showExecution = !!(entryPrice && stopLoss.value) || 
-    !!(entryPrice && takeProfit.value) || !!(stopLoss.vralue && takeProfit.value);
+    !!(entryPrice && takeProfit.value) || !!(stopLoss.value && takeProfit.value);
 
   useEffect(() => {
     if (!socket) return;
@@ -169,7 +168,7 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
       <Text weight="medium">{item.symbol}</Text>
       {'currency' in item && (
         <Text variant="caption" color="secondary">
-          Currency: {item.currency}
+          {localize('base_currency')}: {item.currency}
         </Text>
       )}
     </View>
@@ -177,7 +176,6 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
 
   return (
     <View style={styles.container} testID={testID}>
-      {/* Header with execution type and account info */}
       <View style={styles.header}>
         <View>
           <Text variant="caption" color="secondary">{localize('type')}</Text>
@@ -193,8 +191,7 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
           </Text>
         </View>
       </View>
-
-      {/* Symbol Search */}
+      
       <SearchInput
         value={query}
         onChangeText={onSearchQuery}
@@ -207,7 +204,6 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
         results={filteredResults}
       />
 
-      {/* Entry Price Input */}
       <TextInput
         placeholder={localize('placeholder.entry')}
         value={entry}
@@ -217,17 +213,13 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
         testID="entry-price-input"
         aria-label={localize('placeholder.entry')}
       />
-
-      {/* Pip Info */}
+      
       <PipInfo /> 
-
-      {/* Ratio */}
+      
       {!!reward && (
         <TradeRatio risk={risk} reward={reward} />
       )}
-        
-
-      {/* Stop Loss, Ratio, and Take Profit */}
+      
       <View style={styles.tradeLevels}>
         <StopLossEntry execution={execution} exchangeRate={exchangeRate} />
         <TakeProfitEntry execution={execution} exchangeRate={exchangeRate} />

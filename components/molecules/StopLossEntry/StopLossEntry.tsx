@@ -30,9 +30,7 @@ export const StopLossEntry = ({ execution, exchangeRate}: ExecutionProps) => {
             value: Number(text),
             pips: getPipDifference(entry, Number(text), pipValue)
         } : { value: 0, pips: 0 };
-        setTrade((prev: TradeEntryState) => {
-            return { ...prev, stopLoss}
-        });
+        setTrade((prev) => ({ ...prev, stopLoss}));
         setIsFocused(false);
     };
 

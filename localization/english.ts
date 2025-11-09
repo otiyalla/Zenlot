@@ -31,6 +31,9 @@ const english = {
     profit: 'Profit',
     take_profit_rules: 'Take Profit Rules',
     stop_loss_rules: 'Stop Loss Rules',
+    entry_date: 'Entry Date',
+    exit_date: 'Exit Date',
+    exit: 'Exit',
   },
   common: {
     confirm: 'Confirm',
@@ -46,8 +49,8 @@ const english = {
     close: 'Close',
     open: 'Open',
     closed: 'Closed',
-    close_in_profit: 'Closed in profit',
-    close_in_loss: 'Closed in loss',
+    closed_in_profit: 'Closed in profit',
+    closed_in_loss: 'Closed in loss',
     reached_tp:  'Reached T/P',
     reached_sl: 'Reached S/L'
   },
@@ -212,6 +215,17 @@ const english = {
   app_version: 'App Version',
   last_update: 'Last Update',
   account_actions: 'Account Actions',
+  wins: 'Wins',
+  losses: 'Losses',
+  this_week: 'This Week',
+  this_month: 'This Month',
+  quick_search: 'Quick Search',
+  trade_history: 'Trade History',
+  search_trades: 'Search Trades',
+  no_trade_history: 'No trade history found',
+  start_trading_message: 'Start trading to see your trade history here.',
+  view_details: 'View Details',
+  all_trades: "All"
 
 }
 

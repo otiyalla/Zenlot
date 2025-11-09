@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput as RNTextInput, TextInputProps as RNTextInputProps, StyleSheet, View, Text } from 'react-native';
+import { TextInput as RNTextInput, TextInputProps as RNTextInputProps, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
 
@@ -23,6 +23,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   label,
   fullWidth = true,
   style,
+  rightIcon,
   ...props
 }) => {
     const theme = useColorScheme() as 'light' | 'dark';
@@ -114,17 +115,26 @@ export const TextInput: React.FC<TextInputProps> = ({
 
   return (
     <View style={styles.container}>
-      {label && (
+      {!!label?.length && (
         <Text style={[styles.label, error && styles.errorLabel]}>
           {label}
         </Text>
       )}
-      <RNTextInput
-        style={inputStyle}
-        placeholderTextColor={Colors[theme].placeholder}
-        {...props}
-      />
-      {helperText && (
+      <>
+        <RNTextInput
+          style={inputStyle}
+          placeholderTextColor={Colors[theme].placeholder}
+          {...props}
+        />
+        {!!rightIcon && (
+          <View style={{ position: 'absolute', right: 12, top: (helperText ? '40%' : '55%'), transform: [{ translateY: -12 }] }}>
+            <TouchableOpacity onPress={props.onRightIconPress} accessible={true}>
+            {rightIcon}
+            </TouchableOpacity>
+          </View>
+        )}
+      </>
+      {!!helperText?.length && (
         <Text style={[styles.helperText, error && styles.errorText]}>
           {helperText}
         </Text>

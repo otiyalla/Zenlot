@@ -29,6 +29,9 @@ const french = {
     profit: 'Profit',
     take_profit_rules: 'Règles de take profit',
     stop_loss_rules: 'Règles de stop loss',
+    entry_date: 'Date d’entrée',
+    exit_date: 'Date de sortie',
+    exit: 'Sortie',
   },
   common: {
     confirm: 'Confirmer',
@@ -44,8 +47,8 @@ const french = {
     close: 'Fermer',
     open: 'Ouvrir',
     closed: 'Fermé',
-    close_in_profit: 'Fermé en profit',
-    close_in_loss: 'Fermé en perte',
+    closed_in_profit: 'Fermé en profit',
+    closed_in_loss: 'Fermé en perte',
     reached_tp: 'T/P atteint',
     reached_sl: 'S/L atteint'
   },
@@ -212,6 +215,17 @@ const french = {
   app_version: 'Version de l\'application',
   last_update: 'Dernière mise à jour',
   account_actions: 'Actions du compte',
+  wins: 'Gains',
+  losses: 'Pertes',
+  this_week: 'Cette semaine',
+  this_month: 'Ce mois-ci',
+  quick_search: 'Recherche rapide',
+  trade_history: 'Historique des transactions',
+  search_trades: 'Rechercher des transactions',
+  no_trade_history: 'Aucun historique de transactions trouvé',
+  start_trading_message: 'Commencez à trader pour voir votre historique de transactions ici.',
+  view_details: 'Voir les détails',
+  all_trades: "Tous"
 }
 
 export default french;

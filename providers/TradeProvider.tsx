@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect, use } from 'react';
-import { ITrade, TradeContextType, TradeEntryState } from '@/types';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useMemo, use } from 'react';
+import { ITrade, TradeContextType, TradeEntryState, TradeStatus } from '@/types';
 import { tradeApi } from '@/api/trade';
 import { useAuth } from "./AuthProvider";
+import { getCurrencyValue, formatNumberByLocale } from '@/constants';
 
 // Default state for a new trade entry
 const defaultTrade: ITrade = {
@@ -23,13 +24,13 @@ const TradeContext = createContext<TradeContextType | undefined>(undefined);
 const TradeProvider = ({ children }: { children: ReactNode }) => {
     const [trade, setTrade] = useState<TradeEntryState | ITrade>(defaultTrade);
     const [tradeHistory, setTradeHistory] = useState<TradeEntryState[]>([]);
-    const { getTrades, getPrice, deleteTrade: tradeDelete, createTrade, updateTrade } = tradeApi;
-    const { refreshAuthToken } = useAuth();
+    const { getTrades, getPrice, getFXRate, deleteTrade: tradeDelete, createTrade, updateTrade } = tradeApi;
+    const { refreshAuthToken, user } = useAuth();
+    const { language, accountCurrency } = user ?? {language: 'en'};
 
     useEffect(() => {
         refreshTrades();
     }, []);
-
 
     const refreshTrades = async () => {
         try {
@@ -41,7 +42,102 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const resetTrade = React.useMemo(() => () => setTrade(defaultTrade), [defaultTrade]);
+    const resetTrade = useMemo(() => () => setTrade(defaultTrade), [defaultTrade]);
+
+    const getPipsAnalysis = (trades: TradeEntryState[]) => {
+        interface IAnalysis {
+            trades: number;
+            gain: number;
+            loss: number;
+            net: number;
+        }
+        
+        const pipsData = trades.reduce((acc: IAnalysis, trade: TradeEntryState, i: number, array: TradeEntryState[]) => {
+            acc.trades = array.length;
+            if(["reached_tp", "closed_in_profit"].includes(trade?.status as TradeStatus)){
+                acc.gain += trade.takeProfit.pips;
+            }
+            if(["reached_sl", "closed_in_loss"].includes(trade?.status as TradeStatus)){
+                acc.loss += trade.stopLoss.pips;
+            }
+            acc.net = acc.gain - acc.loss;
+            return acc;
+        }, {trades: 0, gain: 0, loss: 0, net: 0});
+        return pipsData as IAnalysis;
+    }
+
+    const getValueAnalysis = (trades: TradeEntryState[]) => {
+        interface IAnalysis {
+            trades: number;
+            gain: number;
+            loss: number;
+            net: number;
+        }
+        const pipsData = trades.reduce((acc: IAnalysis, trade: any, i: number, all: TradeEntryState[]) => {
+            acc.trades = all.length;
+            if(["reached_tp", "closed_in_profit"].includes(trade?.status as TradeStatus)){
+                const {symbol, entry, takeProfit, lot, closedExchangeRate} = trade;//const loss = formatNumberByLocale(currencyValue, language, accountCurrency);
+                const currencyValue = getCurrencyValue(symbol, entry, takeProfit.value, lot, closedExchangeRate);
+                //const value = formatNumberByLocale(currencyValue, language, accountCurrency);
+                acc.gain+=currencyValue
+            }
+            if(["reached_sl", "closed_in_loss"].includes(trade?.status as TradeStatus)){
+                const {symbol, entry, stopLoss, lot, closedExchangeRate} = trade;
+                const currencyValue = getCurrencyValue(symbol, entry, stopLoss.value, lot, closedExchangeRate);
+                acc.loss+=currencyValue;
+            }
+            acc.net = acc.gain - acc.loss;
+            return acc;
+        }, {trades: 0, gain: 0, loss: 0, net: 0})
+        return pipsData;
+    }
+
+    const getAnalysis = useMemo(() => (analysis_type: string) => {
+        let trades: TradeEntryState[] = [];
+        let analysis = {
+            trades: 0,
+            gain: 0,
+            loss: 0,
+            net: 0
+        };
+        switch (analysis_type) {
+          case 'weekly_pips':
+          case 'weekly_analysis':
+            const startOfWeek = new Date();
+            startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+            trades = tradeHistory.filter(trade => new Date(trade.createdAt) >= startOfWeek);
+            break;
+          case 'monthly_pips':
+          case 'monthly_analysis':
+            const startOfMonth = new Date();
+            startOfMonth.setDate(1);
+            trades = tradeHistory.filter(trade => new Date(trade.createdAt) >= startOfMonth);
+            break;
+          default:
+            break;
+        }
+        trades = trades.filter(trade => trade.status !== 'open');
+        if (analysis_type.includes('pips')) {
+            analysis = getPipsAnalysis(trades);
+        }
+        if (analysis_type.includes('analysis')) {
+            analysis = getValueAnalysis(trades);
+        }
+
+        return analysis;
+    }, [tradeHistory]);
+
+
+
+    const currentRate = async (symbol: string) => {
+        try {
+            const rate = await getFXRate(symbol);
+            const {ask, open, bid} = rate[0] ?? {};
+            return {ask, open, bid};
+        } catch (error) {
+            console.error("get fx rate error: ", error);
+        }
+    }
 
     const submitTrade = async (validated: TradeEntryState | ITrade) => {
         const trade = { ...validated, status: "open" as TradeEntryState['status']};
@@ -88,7 +184,7 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
         return duplicatedTrade;
     }
 
-    const editTrade = async (id: number, update: TradeEntryState | ITrade) => {
+    const editTrade = async (id: number, update: TradeEntryState ) => {
        try {
         await updateTrade(id, update);
         setTradeHistory(prev =>
@@ -112,7 +208,9 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
         deleteTrade,
         duplicateTrade,
         editTrade,
-        refreshTrades
+        refreshTrades,
+        currentRate,
+        getAnalysis
     }
 
     return (

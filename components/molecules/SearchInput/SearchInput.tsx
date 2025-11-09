@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { TextInput, Text, Icon } from '@/components/atoms';
 import { Colors } from '@/constants';
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -57,22 +57,36 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   }, []);
 
   const renderItem = ({item}: {item: SearchResult & {id: string | number}}) => {
-        return (
-            <TouchableOpacity
-                key={`zenlot-search-${item.id}`}
-                style={[styles.resultItemContainer, {
-                    borderBottomColor: Colors[theme].textBorderColor
-                }]}
-                onPress={() => {handleSelect(item)}}
-            >
-                {renderResult && renderResult(item)}
-            </TouchableOpacity>
-        );
-    };
+      return (
+          <TouchableOpacity
+              key={`zenlot-search-${item.id}`}
+              style={[styles.resultItemContainer, {
+                  borderBottomColor: Colors[theme].textBorderColor
+              }]}
+              onPress={() => {handleSelect(item)}}
+          >
+              {renderResult && renderResult(item)}
+          </TouchableOpacity>
+      );
+  };
 
-    const renderItems = results.map(
-        (item: SearchResult, id: number) => renderItem({ item: { id, ...item } })
+  const renderItems = (
+    <ScrollView style={styles.resultsList}>
+    {results.map(
+      (item: SearchResult, id: number) => renderItem({ item: { id, ...item } })
+  )}
+    </ScrollView>)
+
+  const renderIcon = (icon: string | null) => {
+    if (!icon) return null;
+    return (
+      <Icon
+        name={icon}
+        size={18}
+      />
     )
+  }
+    
 
   return (
     <View style={styles.container}>
@@ -85,8 +99,8 @@ export const SearchInput: React.FC<SearchInputProps> = ({
         onFocus={() => setShowResults(value.length > 0)}
         onBlur={handleBlur}
         style={styles.input}
-        rightIcon={loading ? 'spinner' : value.length > 0 ? 'times' : 'search'}
-        onRightIconPress={value.length > 0 ? () => onChangeText('') : undefined}
+        rightIcon={renderIcon(loading ? 'spinner' : value.length > 0 ? 'circle-xmark' : 'magnifying-glass')}
+        onRightIconPress={value.length > 0 ? () => handleTextChange('') : undefined}
       />
       
       {showResults && results.length > 0 && (

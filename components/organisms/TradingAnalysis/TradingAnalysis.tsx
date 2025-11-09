@@ -29,16 +29,8 @@ const types: AnalysisType[] = [
 ];
 
 export const TradingAnalysis: React.FC<TradingAnalysisProps> = ({ testID }) => {
-  const dummyUser = {
-    accountCurrency: "USD",
-    balance: 12500.75,
-    totalTrades: 150,
-    winRate: 0.65,
-    weeklyPnL: 320.5,
-    weeklyTrades: 12,
-    avgReturn: 0.04,
-  };
-  const { trade } = useTrade();
+
+  const { trade, getAnalysis } = useTrade();
   const { user } = useUser();
 
   const [cards, setCards] = useState<IAnalysisCard[]>([]);
@@ -53,19 +45,13 @@ export const TradingAnalysis: React.FC<TradingAnalysisProps> = ({ testID }) => {
   }, [] as { key: string; name: string }[]);
   const { tradeHistory } = useTrade();
 
-  const getAnalysis = (type: string) => {
+  
+  const analyzeTrade = (type: string) => {
     return {
       id: Math.round(Math.random() * 1000),
       title: type,
       type,
-      content: {
-        trades: Math.round(Math.random() * (type.includes("weekly") ? 5 : 10)),
-        gain: Math.round(Math.random() * (type.includes("weekly") ? 20 : 100)),
-        loss: Math.round(Math.random() * (type.includes("weekly") ? 20 : 120)),
-        net:
-          Math.round(Math.random() * (type.includes("weekly") ? 50 : 100)) *
-          (!!Math.round(Math.random()) ? -1 : 1),
-      },
+      content: getAnalysis(type),
     };
   };
 
@@ -73,7 +59,7 @@ export const TradingAnalysis: React.FC<TradingAnalysisProps> = ({ testID }) => {
     //TODO: Call an api to get the analysis - Consider changing to present month and previouse month
     //TODO: Consider changing to present month and previous month
     //TODO:  Consider changing to current week and previous week
-    const newCards = getAnalysis(analysis.key);
+    const newCards = analyzeTrade(analysis.key);
     setCards([...cards, newCards]);
     setSelected([...selected, analysis]);
   };

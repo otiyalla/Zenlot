@@ -28,3 +28,6 @@ export type { SelectProps, SelectItemProps } from './Select';
 
 export { Modal } from './Modal';
 export type { ModalProps } from './Modal';
+
+export { Menu } from './Menu';
+export type { MenuProps } from './Menu';

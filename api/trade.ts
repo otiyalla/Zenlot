@@ -34,7 +34,15 @@ export const tradeApi = {
         return await api.read(url, headers);
     },
 
-
+    async getFXRate(symbol: string){
+        const { access_token, refresh_token } = await getTokens();
+        const headers = {
+            access_token: access_token || '',
+            refresh_token: refresh_token || '',
+        };
+        const url = `pricefeed/exchangeRate/${symbol}`;
+        return await api.read(url, headers);
+    },
 
     async createTrade(data: any) {
         const { access_token, refresh_token, userId } = await getTokens();

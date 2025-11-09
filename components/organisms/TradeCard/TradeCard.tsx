@@ -1,16 +1,16 @@
-import React, { useState, useCallback } from 'react';
-import { Platform, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { TradeEntryState } from '@/types';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Platform, View, StyleSheet, ScrollView } from 'react-native';
+import { TradeEntryState, TradeStatus } from '@/types';
 import { getRatio, getCurrencyValue, getPipDifference, formatNumberByLocale, formatDate, parseErrors } from '@/constants/utils';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
-import { Text, Icon } from '@/components/atoms';
-import { HStack , VStack, TrashIcon, CopyIcon, EditIcon,  Menu, MenuItem, MenuItemLabel } from '@/components/design-system/ui';
+import { Text, Icon, Menu } from '@/components/atoms';
+import { HStack , VStack, TrashIcon, CopyIcon, EditIcon, Badge, BadgeText } from '@/components/design-system/ui';
 import { useTranslate } from '@/hooks/useTranslate';
 import { useTrade } from '@/providers/TradeProvider';
 import { useUser } from '@/providers/UserProvider';
 import {ModalEditPage as ModalEdit} from '@/components/pages/ModalEditPage';
-import { tradeValidation } from '@/validations';
+import { updateTradeValidation } from '@/validations';
 import { z } from 'zod';
 
 export type TradeCardProps = {
@@ -33,37 +33,115 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
     const colorSchema = useColorScheme();
     const theme = Colors[colorSchema ?? 'light'];
     const { localize } = useTranslate();
-    const [ isOpen, setOpen] = useState<boolean>(false);
     const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
-    const { setTrade, duplicateTrade, editTrade, deleteTrade, resetTrade } = useTrade();
+    const { setTrade, duplicateTrade, editTrade, deleteTrade, resetTrade, currentRate } = useTrade();
     const [tradeError, setTradeError] = useState<string>("");
     const [errorsFields, setErrorsFields] = useState<string[]>([]);
-    //Add zod validations
-    //TODO: complete menu functionalities
+    const statusMenuOptions = [
+        {
+            label: "common.open",
+            key: "open",
+        },
+        {
+            label: "common.close",
+            key: "closed",
+        },
+        {
+            label: "common.closed_in_profit",
+            key: "closed_in_profit",
+        },
+        {
+            label: "common.closed_in_loss",
+            key: "closed_in_loss",
+        },
+        {
+            label: "common.reached_tp",
+            key: "reached_tp",
+        },
+        {
+            label: "common.reached_sl",
+            key: "reached_sl",
+        }
+    ];
 
-//TODO: Add currency sign based on user account currency and add ability for user to swap between currency and pip values
-//TODO: Improve the error message by localizing it
+    const onEdit = () => {
+        setTrade(trade);
+        setIsEditOpen(true);
+    }
 
     const menuOptions = [
         {
-            name: 'duplicate_trade',
+            label: 'duplicate_trade',
             key: 'duplicate',
             icon: <Icon name={'copy'} library='gluestack' as={CopyIcon} size={20}/>,
         },
         {
-            name: 'edit_trade',
+            label: 'edit_trade',
             key: 'edit',
             icon: <Icon name={'edit'} library='gluestack' as={EditIcon} size={20} />,
         },
         {
-            name: 'delete_trade',
+            label: 'delete_trade',
             key: 'delete',
             icon: <Icon name={'trash'} library='gluestack' as={TrashIcon} size={20}  color={theme.error} />,
         },
     ];
-    
-    const handleMenuSelection = (item: any, index: number) => {
-        switch(item.key){
+
+    const getCurrentExchangeRate = async () => {
+        const symbol = trade.symbol;
+        const currency = symbol.substring(symbol.length-3, symbol.length);
+        let exchangeRate = 1;
+        if (currency === accountCurrency.toUpperCase()) return exchangeRate;
+        const newsymbol: string = `${currency}${accountCurrency.toUpperCase()}`;
+        const quote = await currentRate(newsymbol);
+        if (quote?.ask) exchangeRate = quote.ask;
+        return exchangeRate;
+    }
+
+    const getCurrentPrice = async () => {
+        const symbol = trade.symbol;
+        let exchangeRate = 0;
+        const quote = await currentRate(symbol);
+        if (quote?.bid) exchangeRate = quote.bid;
+        return exchangeRate;
+    }
+
+    const onStatusChnage = async (status: TradeStatus) => {
+        const closedAt = new Date();
+        let closedPrice = await getCurrentPrice();
+        let closedReason = '';
+        const closedExchangeRate = await getCurrentExchangeRate();
+       
+        switch (status){
+            case 'closed':  
+            case 'close':  
+                closedReason = 'Not yet implemented';
+                break
+            case 'reached_tp':
+            case 'closed_in_profit':
+                closedPrice = trade.takeProfit.value;
+                if (status === 'closed_in_profit') closedReason = ''
+                break
+            case 'reached_sl':
+            case 'closed_in_loss':
+                closedPrice = trade.stopLoss.value;
+                if (status === 'closed_in_loss') closedReason = ''
+                break
+        }
+        
+        return {closedAt, closedExchangeRate, closedPrice, closedReason}
+
+    }
+
+    const handleStatusChange = async (newStatus: string) => {
+        const status = newStatus as TradeStatus;
+        if (status === trade.status) return;
+        let addtionalProps = await onStatusChnage(status);
+        editTrade(trade.id, { ...trade, status, ...addtionalProps })
+    }
+
+    const handleMenuSelection = (selection: string) => {
+        switch(selection){
             case 'duplicate':
                 duplicateTrade(trade.id);
                 break;
@@ -74,13 +152,9 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
                 deleteTrade(trade.id);
                 break;
         }
-        setOpen(false);
     }
 
-    const onEdit = () => {
-        setTrade(trade);
-        setIsEditOpen(true);
-    }
+
 
      const onCancel = useCallback(() => {
         setIsEditOpen(false);
@@ -91,7 +165,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
 
     const onConfirm = useCallback((currentTrade: TradeEntryState) => {
         try {
-            const validated = tradeValidation.parse(currentTrade);
+            const validated = updateTradeValidation.parse(currentTrade);
             editTrade(currentTrade.id, validated);
             onCancel();
         } catch (error) {
@@ -110,59 +184,27 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
         }
     }, [editTrade, onCancel]);
 
-    const menuItems = menuOptions.map((item, index) => {
-        return (
-            <MenuItem
-                style={{
-                    borderBottomColor: theme.lightText, 
-                    borderBottomWidth:1,
-                    //backgroundColor: theme.background
-                }}
-                closeOnSelect
-                key={index}
-                onPress={() => {
-                    handleMenuSelection(item, index);
-                }}
-                textValue={`${localize(item.name)}`}
-            >
-                <MenuItemLabel size='sm' style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <HStack space='2xl'>
-                        {item.icon}
-                        <Text size='sm'>{localize(item.name)}</Text>
-                    </HStack>
-                </MenuItemLabel>
-            </MenuItem>
-        );
-    });
-
-    const handleMenuOpen = () => {
-        setOpen((prev) => !prev);
-    };
-
-    const menu = (
+    const menu = ( 
         <Menu
-            isOpen={isOpen}
-            onClose={() => setOpen(false)}
-            style={{ 
-                //borderColor: theme.text, 
-                //borderWidth: 1, 
-                //backgroundColor: theme.background 
-            }}
-            placement="bottom right"
-            trigger={({ ...triggerProps }) => (
-                <TouchableOpacity
-                    activeOpacity={1}
-                    {...triggerProps}
-                    style={{paddingLeft: 3, paddingRight: 3}}
-                    onPress={handleMenuOpen}
-                >
-                    <Icon name="ellipsis-vertical" size={16} color={theme.text} />
-                </TouchableOpacity>
-            )}
+            menuOptions={menuOptions}
+            onMenuSelection={handleMenuSelection}
+        />
+    )
+
+    const statusItem = (
+        <Badge
+            variant='outline'
+            size= 'sm'
+            className='rounded-[5]'
         >
-            {menuItems}
-        </Menu>
-    ); 
+            <BadgeText 
+                accessibilityLabel={(localize(`common.${status}`)).toUpperCase()}
+                className='font-medium'
+            >
+                {(localize(`common.${status ?? 'open'}`)).toUpperCase()}
+            </BadgeText>
+        </Badge>
+    )
 
     return (
         <>
@@ -309,14 +351,11 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
                     </VStack>
                 </ScrollView>
                 <View style={styles.footer}>
-                    <Text
-                        bold
-                        size='sm'
-                        style={{ color: theme.link }}
-                        accessibilityLabel={(localize(`common.${status ?? 'open'}`)).toUpperCase()}
-                    >
-                        {(localize(`common.${status ?? 'open'}`)).toUpperCase()}
-                    </Text>
+                    <Menu
+                        menuOptions={statusMenuOptions}
+                        onMenuSelection={handleStatusChange}
+                        menuOpenNode={statusItem}
+                    />
                     <Text
                         size='sm'
                         style={{ color: theme.lightText }}

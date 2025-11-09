@@ -31,9 +31,7 @@ export const TakeProfitEntry = ({ exchangeRate, execution }: ExecutionProps) => 
             pips: getPipDifference(entry, Number(text), pipValue)
         } : { value: 0, pips: 0 }
                 
-        setTrade((prev: TradeEntryState) => {
-            return { ...prev, takeProfit}
-        });
+        setTrade((prev) => ({ ...prev, takeProfit}));
         
         setIsFocused(false);
     };

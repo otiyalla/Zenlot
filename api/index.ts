@@ -82,8 +82,9 @@ const makeAuthenticatedRequest = async (
         };
     }
     const response = await fetch(`${API_BASE_URL}/${endpoint}`, options);
-    
-    if (response.status === 401 && tokens.refresh_token && retry === 0 && endpoint !== 'auth/refresh') {
+
+    const BLACK_LISTED_ENDPOINTS = ['auth/refresh', 'auth/signin', 'auth/signup'];
+    if (response.status === 401 && tokens.refresh_token && retry === 0 &&  !BLACK_LISTED_ENDPOINTS.includes(endpoint)) {
         try {
 
             const newAccessToken = await refreshTokens();
