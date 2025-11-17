@@ -18,7 +18,7 @@ function Collapsible({ children, title }: PropsWithChildren & { title: string })
         onPress={() => setIsOpen((value) => !value)}
         activeOpacity={0.8}>
         <Icon
-          name="chevron.right"
+          name="chevron-right"
           size={18}
           weight="medium"
           color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}

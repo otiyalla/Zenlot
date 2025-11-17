@@ -18,6 +18,11 @@ export function GluestackUIProvider({
   style?: ViewProps['style'];
 }) {
   const userColorScheme  = useRNColorScheme();
+  
+  // Validate and sanitize mode
+  const validMode = mode && ['light', 'dark', 'system'].includes(mode) 
+    ? mode 
+    : (userColorScheme as ModeType) || useColorScheme();
   //const { colorScheme, setColorScheme } = useColorScheme();
   /*
   useEffect(() => {

@@ -14,7 +14,7 @@ interface TradeEntryProps {
 }
 
 const ModalEdit: React.FC<TradeEntryProps> =  ({ isOpen, setIsOpen }) => {
-    const {trade: currentTrade, resetTrade, editTrade } = useTrade();
+    const {trade: currentTrade, resetTrade, editTrade, setTrade } = useTrade();
     const [show, setShow] = useState<boolean>(false);
     const {localize} = useTranslate();
     const [tradeError, setTradeError] = useState<string>("");
@@ -49,6 +49,14 @@ const ModalEdit: React.FC<TradeEntryProps> =  ({ isOpen, setIsOpen }) => {
         setShow(prev => !prev);
     }, []);
 
+    const handleEditorChange = useCallback((plainText: string, editorState: string) => {
+        setTrade(prev => ({
+            ...prev,
+            plainText,
+            editorState,
+        }));
+    }, [setTrade]);
+
     return (
         <ScrollView>
             <Modal
@@ -76,7 +84,11 @@ const ModalEdit: React.FC<TradeEntryProps> =  ({ isOpen, setIsOpen }) => {
                 )}
                 <TradeEntryForm/>
                 {show && (
-                    <TextEditor/>
+                    <TextEditor 
+                        plainText={currentTrade?.plainText}
+                        editorState={currentTrade?.editorState}
+                        onChange={handleEditorChange}
+                    />
                 )}
             </Modal>
         </ScrollView>

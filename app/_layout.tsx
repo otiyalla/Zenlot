@@ -53,10 +53,10 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
       alignItems: 'center',
       padding: 20
     }}>
-      <Text style={{ color: 'white', fontSize: 18, marginBottom: 20 }}>
+      <Text style={{ color: 'red', fontSize: 18, marginBottom: 20 }}>
         App Error
       </Text>
-      <Text style={{ color: 'white', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>
+      <Text style={{ fontSize: 14, textAlign: 'center', marginBottom: 20 }}>
         {error.message}
       </Text>
       <Text 

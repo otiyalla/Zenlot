@@ -31,6 +31,9 @@ export type TradeStatus = 'open' | 'close' | 'closed' | 'reached_tp' | 'reached_
 
 export interface TradeEntryState extends ITrade {    
     id: number; 
+    rr: number;
+    risk: number;
+    reward: number;
     createdAt: Date | string;
     updatedAt: Date | string;
     tags?: string[];
@@ -84,13 +87,11 @@ export interface PriceFeedData {
     date: string;
 }
 
-// Define the context value type
-
 export interface TradeContextType {
     trade: TradeEntryState | ITrade;
     tradeHistory: TradeEntryState[];
     resetTrade: () => void;
-    submitTrade: (validated: TradeEntryState | ITrade) => void;
+    submitTrade: (validated: Partial<TradeEntryState>) => void;
     deleteTrade: (id: number) => void;
     duplicateTrade: (id: number) => void;
     editTrade: (id: number, update: TradeEntryState ) => void;

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Platform, View, StyleSheet, ScrollView } from 'react-native';
 import { TradeEntryState, TradeStatus } from '@/types';
-import { getRatio, getCurrencyValue, getPipDifference, formatNumberByLocale, formatDate, parseErrors } from '@/constants/utils';
+import { getRatio, getCurrencyValue, getPipDifference, formatNumberByLocale, formatDate, parseErrors } from '@/constants';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
 import { Text, Icon, Menu } from '@/components/atoms';
@@ -233,7 +233,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
                             style={[styles.side, { color: theme.lightText }]}
                             accessibilityLabel={`Execution: ${execution.toUpperCase()}`}
                         >
-                            {execution.toUpperCase()}
+                            {localize(`forex.${execution}`).toUpperCase()}
                         </Text>
                         {menu}
                     </HStack>

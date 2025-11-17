@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import {StopLossEntry, TakeProfitEntry, TradeRatio, PipInfo, ExecutionType} from '@/components/molecules';
 import Search  from '@/components/atoms/Legacy/Search';
 import { TextInput } from '@/components/atoms';
-import { getExecutionType, getRatio, getPipValue } from '@/constants/utils';
+import { getExecutionType, getRatio, getPipValue } from '@/constants';
 import { VStack, HStack, Text } from '@/components/design-system/ui';
 import { useTranslate } from '@/hooks/useTranslate';
 import { useUser } from '@/providers/UserProvider';
@@ -49,9 +49,7 @@ const TradeEntry: React.FC<{}> = () => {
                     const price = execution === 'buy' ? instrument.ask : instrument.bid;
                     setEntry(price.toString());
                     const pips = getPipValue(price);
-                    setTrade((prev: TradeEntryState) => {
-                        return { ...prev, entry: price, pips: Number(pips)}
-                    })
+                    setTrade((prev) => ({ ...prev, entry: price, pips: Number(pips)}))
                 }
             });
 
@@ -60,9 +58,7 @@ const TradeEntry: React.FC<{}> = () => {
                 if (!!instrument?.ticker) {
                     const { open } = instrument;
                     setExchangeRate(Number(open));
-                    setTrade((prev: TradeEntryState) => {
-                        return { ...prev, exchangeRate: Number(open)}
-                    })
+                    setTrade((prev) => ({ ...prev, exchangeRate: Number(open)}));
                 }
             });
 
@@ -92,10 +88,7 @@ const TradeEntry: React.FC<{}> = () => {
     const handleEntryPriceChange = (text: string) => {
         setEntry(text);
         const price = parseFloat(text);
-        if (!isNaN(price)) {
-            setTrade((prev: TradeEntryState) => {
-                return { ...prev, entry: price, symbol: pair}
-            })
+        if (!isNaN(price)) {    setTrade((prev) => ({ ...prev, entry: price, symbol: pair}));
         }
     };
 
@@ -118,9 +111,7 @@ const TradeEntry: React.FC<{}> = () => {
 
     const onSymbolChange = (text: string) => {
         setPair(text.toUpperCase());
-        setTrade((prev: TradeEntryState) => {
-            return { ...prev, symbol: text.toUpperCase()}
-        })
+        setTrade((prev) => ({ ...prev, symbol: text.toUpperCase()}));
     };
 
     const renderSearchItem = (results: IQuote) => {

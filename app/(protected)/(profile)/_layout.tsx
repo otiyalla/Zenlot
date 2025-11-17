@@ -8,8 +8,8 @@ import { View } from 'react-native';
 
 export default function RootLayout() {
     const { localize } = useTranslate()
-    const colorScheme = useColorScheme();
-    const theme = Colors[colorScheme ?? 'light'];
+    const colorScheme = useColorScheme() as 'light' | 'dark';
+    const theme = Colors[colorScheme];
   return (
       
         <SafeAreaProvider>

@@ -5,7 +5,7 @@ import { Text } from '../Text';
 import { Icon } from '../Icon';
 import { HStack, Menu as GSMenu, MenuItem, MenuItemLabel, Pressable } from '@/components/design-system/ui';
 import { useTranslate } from '@/hooks/useTranslate';
-import { ViewStyle } from 'react-native';
+import { Platform, ViewStyle } from 'react-native';
 import type { Selection } from '@react-types/shared';
 
 interface menuOptionProps {
@@ -44,7 +44,6 @@ export const Menu: React.FC<MenuProps> = ({
     const [isOpen, setOpen] = useState<boolean>(false);
 
     const handleMenuSelection = (key: Selection) => {
-        console.log('selection: ', Array.from(key))
         const selections = Array.from(key) as string[];
         if (onMenuSelection) onMenuSelection(selections[0]);
         if (onMenuSelections) onMenuSelections(selections);
@@ -75,6 +74,10 @@ export const Menu: React.FC<MenuProps> = ({
         closeOnSelect
         onPress={() => {
             item.onPress?.();
+            if(Platform.OS === 'web') {
+                if(!item.onPress) handleMenuSelection(new Set([item.key]));
+                console.log('item: ', item)
+            }
             setOpen(false);
         }}
         textValue={localize(item.label)}

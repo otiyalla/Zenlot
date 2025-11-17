@@ -3,8 +3,7 @@ import { TextInput, Text } from '@/components/atoms';
 import { VStack, HStack } from '@/components/design-system/ui';
 import { useTranslate } from '@/hooks/useTranslate';
 import { useTrade } from '@/providers/TradeProvider';
-import { MIN_LOT_SIZE } from '@/constants/utils';
-import { TradeEntryState } from '@/types';
+import { MIN_LOT_SIZE } from '@/constants';
 
 export const PipInfo: React.FC<{}> = () => {
     const { trade, setTrade } = useTrade();
@@ -31,18 +30,14 @@ export const PipInfo: React.FC<{}> = () => {
         const lot = sanitized(text);
         setLotSize(lot);
         if (lot >= MIN_LOT_SIZE){
-            setTrade((prev: TradeEntryState) => {
-                return { ...prev, lot: Number(lot)}
-            });
+            setTrade((prev) => ({ ...prev, lot: Number(lot)}));
         }
     };
 
     const handlePips = (text: string) => {
         const pips = sanitized(text);
         setPips(pips);
-        setTrade((prev: TradeEntryState) => {
-            return { ...prev, pips: Number(pips)}
-        });
+        setTrade((prev) => ({ ...prev, pips: Number(pips)}));
     }
 
     return (

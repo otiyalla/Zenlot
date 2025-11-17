@@ -1,5 +1,5 @@
 import { api, getTokens } from '.';
-import { getCurrencyValue } from '@/constants/utils';
+import { getCurrencyValue } from '@/constants';
 
 
 export const tradeApi = {

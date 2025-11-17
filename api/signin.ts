@@ -35,7 +35,6 @@ export const signinApi = {
     },
     
     async resetpassword(email: string) {
-        console.log('the email: ', email)
         const res = await api.create(`auth/resetpassword`, email);
         return res;
     }

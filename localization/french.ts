@@ -46,6 +46,7 @@ const french = {
     add: 'Ajouter',
     close: 'Fermer',
     open: 'Ouvrir',
+    opened: 'Ouvert',
     closed: 'Fermé',
     closed_in_profit: 'Fermé en profit',
     closed_in_loss: 'Fermé en perte',
@@ -218,14 +219,18 @@ const french = {
   wins: 'Gains',
   losses: 'Pertes',
   this_week: 'Cette semaine',
+  recent: 'Récent',
   this_month: 'Ce mois-ci',
   quick_search: 'Recherche rapide',
   trade_history: 'Historique des transactions',
   search_trades: 'Rechercher des transactions',
+  search_trades_helper_text: 'Recherchez par symbole, type d\'exécution, statut ou contenu du journal.',
   no_trade_history: 'Aucun historique de transactions trouvé',
   start_trading_message: 'Commencez à trader pour voir votre historique de transactions ici.',
   view_details: 'Voir les détails',
-  all_trades: "Tous"
+  all_trades: "Tous",
+  load_more: 'Charger plus',
+  journal: 'Journal',
 }
 
 export default french;

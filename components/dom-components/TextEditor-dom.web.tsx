@@ -80,7 +80,7 @@ export default React.memo(function Editor({
               ErrorBoundary={LexicalErrorBoundary}
             />
             <OnChangePlugin
-              onChange={(editorState: EditorState, editor: LexicalEditor, tags: Set<string>) => {
+              onChange={(editorState: EditorState, editor: LexicalEditor, tags: Set<string>): void => {
                 editorState.read(() => {
                   const root = $getRoot();
                   const textContent = root.getTextContent();

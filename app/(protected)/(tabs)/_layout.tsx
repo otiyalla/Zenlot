@@ -61,7 +61,7 @@ export default function TabLayout() {
             title: localize('history'),
             tabBarIcon: ({ color }) => <Icon size={24} name="rotate-left" color={color} />,
           }}
-          listeners={{ 
+          /*listeners={{ 
             tabPress: (e) => {
               // Prevent default action
               console.log('History tab pressed:', e);
@@ -69,7 +69,7 @@ export default function TabLayout() {
               // Redirect user to login page
 
             },
-          }}
+          }}*/
         />
         <Tabs.Screen
           name="profile"

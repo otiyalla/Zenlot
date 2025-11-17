@@ -1,4 +1,4 @@
-import React, { Dispatch, useState, SetStateAction } from 'react';
+import React, { Dispatch, useState, SetStateAction, useCallback } from 'react';
 import { ScrollView } from 'react-native';
 import { Text, Modal } from '@/components/atoms';
 import { useTranslate } from '@/hooks/useTranslate';
@@ -14,7 +14,7 @@ interface TradeEntryProps {
 }
 
 const ModalEntry: React.FC<TradeEntryProps> = ({ isOpen, setIsOpen }) => {
-    const {trade, resetTrade, submitTrade } = useTrade();
+    const {trade, resetTrade, submitTrade, setTrade } = useTrade();
     const [show, setShow] = useState<boolean>(false);
     const {localize} = useTranslate();
     const [tradeError, setTradeError] = useState<string>("");
@@ -48,6 +48,14 @@ const ModalEntry: React.FC<TradeEntryProps> = ({ isOpen, setIsOpen }) => {
         setShow(!show);
     };
 
+    const handleEditorChange = useCallback((plainText: string, editorState: string) => {
+        setTrade(prev => ({
+            ...prev,
+            plainText,
+            editorState,
+        }));
+    }, [setTrade]);
+
     return (
         <ScrollView>
             <Modal
@@ -76,7 +84,11 @@ const ModalEntry: React.FC<TradeEntryProps> = ({ isOpen, setIsOpen }) => {
                 )}
                 <TradeEntryForm/>
                 {show && (
-                    <TextEditor/>
+                    <TextEditor 
+                        plainText={trade?.plainText}
+                        editorState={trade?.editorState}
+                        onChange={handleEditorChange}
+                    />
                 )}
             </Modal>
                             

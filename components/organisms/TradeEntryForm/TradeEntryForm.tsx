@@ -5,7 +5,7 @@ import { SearchInput, StopLossEntry, TakeProfitEntry, TradeRatio, PipInfo, Execu
 import { useTrade } from '@/providers/TradeProvider';
 import { useUser } from '@/providers/UserProvider';
 import { useTranslate } from '@/hooks/useTranslate';
-import { getExecutionType, getRatio, getPipValue } from '@/constants/utils';
+import { getExecutionType, getRatio, getPipValue } from '@/constants';
 import { useWebsocket } from '@/providers/WebsocketProvider';
 import { IQuote } from '@/types';
 

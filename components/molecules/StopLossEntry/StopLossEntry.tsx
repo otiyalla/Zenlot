@@ -3,7 +3,7 @@ import { Box } from '@/components/design-system/ui';
 import { Text } from '@/components/atoms';
 import { Pressable } from '@/components/design-system/ui';
 import { TextInput } from '@/components/atoms';
-import { getPipDifference, getSuggestedStopLoss, getCurrencyValue, formatNumberByLocale} from '@/constants/utils';
+import { getPipDifference, getSuggestedStopLoss, getCurrencyValue, formatNumberByLocale} from '@/constants';
 import { TradeEntryState, ExecutionProps } from '@/types';
 import { useTranslate } from '@/hooks/useTranslate';
 import { useTrade } from '@/providers/TradeProvider';

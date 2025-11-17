@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, ReactNode, useEffect, useMe
 import { ITrade, TradeContextType, TradeEntryState, TradeStatus } from '@/types';
 import { tradeApi } from '@/api/trade';
 import { useAuth } from "./AuthProvider";
-import { getCurrencyValue, formatNumberByLocale } from '@/constants';
+import { LOSS_STATUSES, WIN_STATUSES, getCurrencyValue, formatNumberByLocale } from '@/constants';
 
 // Default state for a new trade entry
 const defaultTrade: ITrade = {
@@ -75,18 +75,18 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
         }
         const pipsData = trades.reduce((acc: IAnalysis, trade: any, i: number, all: TradeEntryState[]) => {
             acc.trades = all.length;
-            if(["reached_tp", "closed_in_profit"].includes(trade?.status as TradeStatus)){
+            if(WIN_STATUSES.includes(trade?.status as TradeStatus)){
                 const {symbol, entry, takeProfit, lot, closedExchangeRate} = trade;//const loss = formatNumberByLocale(currencyValue, language, accountCurrency);
                 const currencyValue = getCurrencyValue(symbol, entry, takeProfit.value, lot, closedExchangeRate);
                 //const value = formatNumberByLocale(currencyValue, language, accountCurrency);
                 acc.gain+=currencyValue
             }
-            if(["reached_sl", "closed_in_loss"].includes(trade?.status as TradeStatus)){
+            if(LOSS_STATUSES.includes(trade?.status as TradeStatus)){
                 const {symbol, entry, stopLoss, lot, closedExchangeRate} = trade;
                 const currencyValue = getCurrencyValue(symbol, entry, stopLoss.value, lot, closedExchangeRate);
                 acc.loss+=currencyValue;
             }
-            acc.net = acc.gain - acc.loss;
+            acc.net = Number((acc.gain - acc.loss).toFixed(2));
             return acc;
         }, {trades: 0, gain: 0, loss: 0, net: 0})
         return pipsData;
@@ -127,8 +127,6 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
         return analysis;
     }, [tradeHistory]);
 
-
-
     const currentRate = async (symbol: string) => {
         try {
             const rate = await getFXRate(symbol);
@@ -139,7 +137,7 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
-    const submitTrade = async (validated: TradeEntryState | ITrade) => {
+    const submitTrade = async (validated: Partial<TradeEntryState>) => {
         const trade = { ...validated, status: "open" as TradeEntryState['status']};
         try{
             const newTrade = await createTrade(trade);

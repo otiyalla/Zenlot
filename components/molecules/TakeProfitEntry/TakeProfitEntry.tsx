@@ -3,7 +3,7 @@ import { Box } from '@/components/design-system/ui';
 import { Text } from '@/components/atoms';
 import { Pressable } from '@/components/design-system/ui';
 import { TextInput } from '@/components/atoms';
-import { getPipDifference, getSuggestedTakeProfit, getCurrencyValue, formatNumberByLocale } from '@/constants/utils';
+import { getPipDifference, getSuggestedTakeProfit, getCurrencyValue, formatNumberByLocale } from '@/constants';
 import { useTranslate } from '@/hooks/useTranslate';
 import { useTrade } from '@/providers/TradeProvider';
 import { useUser } from '@/providers/UserProvider';

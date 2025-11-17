@@ -8,7 +8,7 @@ import { Icon } from '../Icon';
 export interface ButtonProps {
   onPress: () => void;
   title: string;
-  variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'success';
+  variant?: 'primary' | 'secondary' | 'outline' | 'outline-danger' | 'danger' | 'success';
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   fullWidth?: boolean;
@@ -20,7 +20,7 @@ export interface ButtonProps {
   icon?: string
 }
 
-const allowedVariants = ['primary', 'secondary', 'outline', 'danger', 'success'] as const;
+const allowedVariants = ['primary', 'secondary', 'outline', 'outline-danger', 'danger', 'success'] as const;
 const allowedSizes = ['sm', 'md', 'lg'] as const;
 
 export const Button: React.FC<ButtonProps> = ({
@@ -60,6 +60,10 @@ export const Button: React.FC<ButtonProps> = ({
     outline: {
       backgroundColor: 'transparent',
       borderColor: borderColor ? borderColor : Colors[theme].buttons,
+    },
+    'outline-danger': {
+      backgroundColor: 'transparent',
+      borderColor: borderColor ? borderColor : Colors[theme].danger,
     },
     success: {
       borderWidth: 1,
@@ -101,6 +105,9 @@ export const Button: React.FC<ButtonProps> = ({
     outlineText: {
       color: color ? color : Colors[theme].buttons,
     },
+    'outline-dangerText': {
+      color: color ? color : Colors[theme].text,
+    },
     successText: {
       color: color ? color : Colors[theme].buttonText,
     },
@@ -140,6 +147,9 @@ export const Button: React.FC<ButtonProps> = ({
     },
     outlineIcon: {
       color: color ? color : Colors[theme].buttons,
+    },
+    'outline-dangerIcon': {
+      color: color ? color : Colors[theme].text,
     },
     successIcon: {
       color: color ? color : Colors[theme].buttonText,

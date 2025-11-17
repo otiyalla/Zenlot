@@ -14,7 +14,7 @@ export interface ModalEditPageProps {
 }
 
 export const ModalEditPage: React.FC<ModalEditPageProps> =  ({ isOpen, tradeError, onCancel, onConfirm }) => {
-    const { trade: currentTrade } = useTrade();
+    const { trade: currentTrade, setTrade } = useTrade();
     const [show, setShow] = useState<boolean>(false);
     const {localize} = useTranslate();
 
@@ -34,7 +34,15 @@ export const ModalEditPage: React.FC<ModalEditPageProps> =  ({ isOpen, tradeErro
             onConfirm(currentTrade);
         }
         setShow(false);
-    }, [onConfirm])
+    }, [onConfirm]);
+
+    const handleEditorChange = useCallback((plainText: string, editorState: string) => {
+        setTrade(prev => ({
+            ...prev,
+            plainText,
+            editorState,
+        }));
+    }, [setTrade]);
 
 
     return (
@@ -64,7 +72,11 @@ export const ModalEditPage: React.FC<ModalEditPageProps> =  ({ isOpen, tradeErro
             )}
             <TradeEntryForm/>
             {show && (
-                <TextEditor/>
+                <TextEditor 
+                    plainText={currentTrade?.plainText}
+                    editorState={currentTrade?.editorState}
+                    onChange={handleEditorChange}
+                />
             )}
         </Modal>
     );

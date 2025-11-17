@@ -22,3 +22,9 @@ export { ListContent } from './ListContent';
 export type { ListContentProps } from './ListContent';
 
 export { ForexRulesTable } from './ForexRulesTable';
+
+export { HistoryCard, HistoryDetails, HistoryEdit } from './History';
+
+export { TradeDetails } from './TradeDetails';
+export type { TradeDetailsProps } from './TradeDetails';
+

@@ -48,6 +48,7 @@ const english = {
     add: 'Add',
     close: 'Close',
     open: 'Open',
+    opened: 'Opened',
     closed: 'Closed',
     closed_in_profit: 'Closed in profit',
     closed_in_loss: 'Closed in loss',
@@ -218,14 +219,18 @@ const english = {
   wins: 'Wins',
   losses: 'Losses',
   this_week: 'This Week',
+  recent: 'Recent',
   this_month: 'This Month',
   quick_search: 'Quick Search',
   trade_history: 'Trade History',
   search_trades: 'Search Trades',
+  search_trades_helper_text: 'Search by symbol, execution type, status, or journal content.',
   no_trade_history: 'No trade history found',
   start_trading_message: 'Start trading to see your trade history here.',
   view_details: 'View Details',
-  all_trades: "All"
+  all_trades: "All",
+  load_more: 'Load More',
+  journal: 'Journal',
 
 }
 

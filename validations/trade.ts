@@ -7,6 +7,9 @@ export const createTradeValidation = z.object({
     pips: z.number().gt(0).register(tradeValidationRegistry, { title: "Pips", description: "Trade pips" }),
     execution: z.enum(['buy', 'sell']).register(tradeValidationRegistry, { title: "Execution", description: "Trade execution type (buy or sell)" }),
     exchangeRate: z.number().register(tradeValidationRegistry, { title: "Exchange Rate", description: "Trade exchange rate" }),
+    rr: z.number().gt(0).register(tradeValidationRegistry, { title: "Risk-Reward Ratio", description: "Trade risk-reward ratio" }),
+    risk: z.number().gt(0).register(tradeValidationRegistry, { title: "Risk", description: "Trade risk amount" }),
+    reward: z.number().gt(0).register(tradeValidationRegistry, { title: "Reward", description: "Trade reward amount" }),
     takeProfit: z.object({
         value: z.number().gt(0).register(tradeValidationRegistry, { title: "Take Profit Value", description: "Trade take profit value" }),
         pips: z.number().gt(0).register(tradeValidationRegistry, { title: "Take Profit Pips", description: "Trade take profit pips" }),
