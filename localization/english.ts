@@ -38,6 +38,7 @@ const english = {
   common: {
     confirm: 'Confirm',
     cancel: 'Cancel',
+    created: 'Created',
     remove: 'Remove',
     edit: 'Edit',
     delete: 'Delete',
@@ -58,11 +59,13 @@ const english = {
   placeholder: {
     entry: 'Enter entry price',
     forex: 'Search for currency',
+    currency: 'Enter currency',
     profit: 'Enter take profit',
     loss: 'Enter stop loss',
     lot: 'Enter lot size',
     pips: 'Enter pip value',
-    journal: 'Start journaling...'
+    journal: 'Start journaling...',
+    tag: 'Enter tag',
 
   },
   language: {
@@ -122,6 +125,20 @@ const english = {
     jpy: 'JPY',
     chf: 'CHF',
     cny: 'CNY',
+  },
+  journal:{
+    title: 'Journal',
+    search_helper_text: 'Search journal entries by tags, symbols or content',
+    all: 'All Journals',
+    no_journal_entries: 'No journal entries found',
+    create: 'Create Journal Entry',
+    start_journaling_message: 'Start journaling to keep track of your trading journey.',
+    search: 'Search Journals',
+    pinned: 'Pinned Journals',
+    archived: 'Archived Journals',
+    entries: 'Entries',
+    content_required: 'Content is required',
+    edit: 'Edit Journal Entry',
   },
   password: {
     password: 'Password',
@@ -230,7 +247,10 @@ const english = {
   view_details: 'View Details',
   all_trades: "All",
   load_more: 'Load More',
-  journal: 'Journal',
+  optional: 'Optional',
+  title: 'Title',
+  tags: 'Tags',
+  content: 'Content',
 
 }
 

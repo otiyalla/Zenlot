@@ -33,7 +33,7 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
   testID,
 }) => {
   const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme ?? 'light'];
+  const theme = Colors[colorScheme as 'light' | 'dark'];
   
   const pageStyle = [
     styles.page,
@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 16,
-    //backgroundColor: theme.background
   },
   footer: {
     padding: 16,

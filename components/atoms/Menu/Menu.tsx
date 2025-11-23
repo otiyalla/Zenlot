@@ -38,8 +38,8 @@ export const Menu: React.FC<MenuProps> = ({
     onMenuSelection,
     onMenuSelections
 }) => {
-    const colorSchema = useColorScheme();
-    const theme = Colors[colorSchema ?? 'light'];
+    const colorScheme = useColorScheme();    
+    const theme = Colors[colorScheme as 'light' | 'dark'];
     const { localize } = useTranslate();
     const [isOpen, setOpen] = useState<boolean>(false);
 

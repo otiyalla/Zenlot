@@ -29,7 +29,7 @@ export const Icon: React.FC<IconProps> = ({
   accessibilityLabel,
   as,
 }) => {
-  const theme = Colors[useColorScheme() ?? 'light'];
+  const theme = Colors[useColorScheme() as 'light' | 'dark'];
   const gsSizeMap: { [key: number]: '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' } = {
     12: '2xs',
     16: 'xs',

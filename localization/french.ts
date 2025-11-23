@@ -36,6 +36,7 @@ const french = {
   common: {
     confirm: 'Confirmer',
     cancel: 'Annuler',
+    created: 'Créé',
     remove: 'Supprimer',
     edit: 'Modifier',
     delete: 'Supprimer',
@@ -56,11 +57,13 @@ const french = {
   placeholder: {
     entry: 'Entrez le prix d’entrée',
     forex: 'Rechercher une devise',
+    currency: 'Entrez la devise',
     profit: 'Entrez le take profit',
     loss: 'Entrez le stop loss',
     lot: 'Entrez la taille du lot',
     pips: 'Entrez la valeur du pip',
-    journal: 'Commencez à écrire dans le journal...'
+    journal: 'Commencez à écrire dans le journal...',
+    tag: 'Entrez le tag'
   },
   language: {
     language: 'Langue',
@@ -118,6 +121,20 @@ const french = {
     jpy: 'JPY',
     chf: 'CHF',
     cny: 'CNY',
+  },
+  journal: {
+    title: 'Journal',
+    search_helper_text: 'Recherchez des entrées de journal par tags, symboles ou contenu',
+    all: 'Tous les journaux',
+    no_journal_entries: 'Aucune entrée de journal trouvée',
+    create: 'Créer une entrée de journal',
+    start_journaling_message: 'Commencez à tenir un journal pour suivre votre parcours de trading.',
+    search: 'Rechercher des journaux',
+    pinned: 'Journaux épinglés',
+    archived: 'Journaux archivés',
+    entries: 'Entrées',
+    content_required: 'Le contenu du journal est requis',
+    edit: 'Modifier l\'entrée du journal',
   },
   password: {
     password: 'Mot de passe',
@@ -230,7 +247,10 @@ const french = {
   view_details: 'Voir les détails',
   all_trades: "Tous",
   load_more: 'Charger plus',
-  journal: 'Journal',
+  optional: 'Optionnel',
+  title: 'Titre',
+  tags: 'Tags',
+  content: 'Contenu',
 }
 
 export default french;

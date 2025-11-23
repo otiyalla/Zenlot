@@ -269,7 +269,7 @@ export const HistoryEdit: React.FC<HistoryEditProps> = ({
 
             <Divider className='my-3'/>
             <VStack space="xs">
-              <Text size="xs">{localize('journal')}</Text>
+              <Text size="xs">{localize('journal.name')}</Text>
               <TextEditor 
                 plainText={plainText}
                 editorState={editorState}

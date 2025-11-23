@@ -11,12 +11,13 @@ export const unstable_settings = {
 export default function ProtectedLayout() {
     const { isAuthenticated, authChecked } = useAuth();
     const { user } = useUser();
-    const theme = user?.theme || 'light';
-     if (!authChecked) return null;
+    const theme = (user?.theme) as 'light' | 'dark' | 'system';
+    
+    if (!authChecked) return null;
     if (!isAuthenticated) return <Redirect href="/(auth)" />;
 
     return (
-        <GluestackUIProvider mode={theme}>
+      <GluestackUIProvider mode={theme}> 
         <WebsocketProvider>
             <TradeProvider>
                 <Stack   
@@ -57,6 +58,6 @@ export default function ProtectedLayout() {
                 </Stack>
             </TradeProvider>
         </WebsocketProvider>
-        </GluestackUIProvider>
+       </GluestackUIProvider>
     );
 }

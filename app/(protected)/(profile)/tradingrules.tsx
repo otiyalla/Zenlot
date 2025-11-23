@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, ScrollView } from 'react-native';
 import { HStack, VStack, Switch, Divider } from '@/components/design-system/ui';
 import { Text, Button, SafeAreaView } from '@/components/atoms';
 import { useUser } from '@/providers/UserProvider';
@@ -9,7 +9,6 @@ import { Colors } from '@/constants/Colors';
 import {ForexRulesTable} from '@/components/organisms';
 import { ForexRule } from "@/types";
 import { router } from 'expo-router';
-
   
 export default function UserInfoSection() {
     const { user, update } = useUser();
@@ -70,7 +69,8 @@ export default function UserInfoSection() {
 
     return (
         <SafeAreaView style={[styles.section, { backgroundColor: theme.background, shadowColor: theme.textBorderColor }]}>
-        <Text variant='title' size='3xl' weight='semibold'>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 20}}>
+          <Text variant='title' size='3xl' weight='semibold'>
             {localize('trading_rules')}
         </Text>
         <Text color="secondary">
@@ -88,7 +88,7 @@ export default function UserInfoSection() {
                 <Switch
                     defaultValue={togglePips}
                     trackColor={{ false: theme.secondary, true: theme.primary }}
-                    onValueChange={(value) => setTogglePips(value)}
+                    onValueChange={(value: boolean) => setTogglePips(value)}
                     thumbColor={theme.invesetext}
                     ios_backgroundColor={theme.secondary}
                 />
@@ -105,8 +105,8 @@ export default function UserInfoSection() {
                 onStopLossChange={setStopLossRules}
             />
         </VStack>
-
-              {buttonCommands}
+        {buttonCommands}
+        </ScrollView>
     </SafeAreaView>
     )
 }

@@ -2,16 +2,17 @@ import React, { ComponentProps } from "react";
 import {  StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider as RNSafeAreaView } from 'react-native-safe-area-context';
 
 export type SafeAreaViewProps = ComponentProps<typeof RNSafeAreaView>
 
 export const SafeAreaView: React.FC<SafeAreaViewProps> = (props) => {
   const colorScheme = useColorScheme();
+  const theme = Colors[colorScheme as 'light' | 'dark'];
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: Colors[colorScheme ?? "light"].background,
+      backgroundColor: theme.background,
     },
   });
 

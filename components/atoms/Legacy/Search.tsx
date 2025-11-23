@@ -23,6 +23,7 @@ const Search = ({ query, onChangeText, onSelect, onSearch, placeholderText, rend
     const [showResults, setShowResults] = useState(false);
     const { socket } = useWebsocket();
     const [isFocus, setFocus] = useState<boolean>(false);
+    const theme = Colors[colorScheme as 'light' | 'dark']
 
     useEffect(() => {
         if (isFocus){
@@ -89,7 +90,7 @@ const Search = ({ query, onChangeText, onSelect, onSearch, placeholderText, rend
             <TouchableOpacity
                 key={`zenlot-search-${item.id}`}
                 style={[styles.item, {
-                    borderBottomColor: Colors[colorScheme ?? "light"].textBorderColor
+                    borderBottomColor: theme.textBorderColor
                 }]}
                 onPress={() => {onSelectItem(item)}}
             >
@@ -115,8 +116,8 @@ const Search = ({ query, onChangeText, onSelect, onSearch, placeholderText, rend
             {showResults && (
                 <Pressable onPress={onListPress}>
                     <ScrollView style={[styles.dropdown, {
-                        backgroundColor: Colors[colorScheme ?? "light"].background,
-                        borderColor: Colors[colorScheme ?? "light"].textBorderColor,
+                        backgroundColor: theme.background,
+                        borderColor: theme.textBorderColor,
                     }]}
                     nestedScrollEnabled={true}
                     >

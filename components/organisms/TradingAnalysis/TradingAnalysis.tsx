@@ -38,7 +38,7 @@ export const TradingAnalysis: React.FC<TradingAnalysisProps> = ({ testID }) => {
   const { localize } = useTranslate();
   const [selected, setSelected] = useState<AnalysisProps[]>([]);
   const colorSchema = useColorScheme();
-  const theme = Colors[colorSchema ?? "light"];
+  const theme = Colors[colorSchema as "light" | "dark"];
   const list = types.reduce((a, e) => {
     a.push({ key: e, name: localize(e) });
     return a;

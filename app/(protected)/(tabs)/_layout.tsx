@@ -12,31 +12,33 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { localize } = useTranslate();
 
+  const scheme: 'light' | 'dark' = colorScheme === 'dark' ? 'dark' : 'light';
+
   return (
       <Tabs
         backBehavior='order'
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].primary,
-          tabBarInactiveTintColor: Colors[colorScheme ?? 'light'].secondary,
+          tabBarActiveTintColor: Colors[scheme].primary,
+          tabBarInactiveTintColor: Colors[scheme].secondary,
           tabBarButton: HapticTab,
           //tabBarBackground: TabBarBackground,
           tabBarStyle: Platform.select({
             ios: {
               // Use a transparent background on iOS to show the blur effect
               position: 'absolute',
-              backgroundColor: Colors[colorScheme ?? 'light'].background,
-              borderTopColor: Colors[colorScheme ?? 'light'].borderColor,
+              backgroundColor: Colors[scheme].background,
+              borderTopColor: Colors[scheme].borderColor,
               borderTopWidth: 1
             },
             android: {
-              backgroundColor: Colors[colorScheme ?? 'light'].background,
-              borderTopColor: Colors[colorScheme ?? 'light'].borderColor,
+              backgroundColor: Colors[scheme].background,
+              borderTopColor: Colors[scheme].borderColor,
               borderTopWidth: 1,
             },
             default: {
-              backgroundColor: Colors[colorScheme ?? 'light'].background,
-              borderTopColor: Colors[colorScheme ?? 'light'].borderColor,
+              backgroundColor: Colors[scheme].background,
+              borderTopColor: Colors[scheme].borderColor,
               borderTopWidth: 1,
             },
           }),
