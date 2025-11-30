@@ -28,3 +28,5 @@ export { HistoryCard, HistoryDetails, HistoryEdit } from './History';
 export { TradeDetails } from './TradeDetails';
 export type { TradeDetailsProps } from './TradeDetails';
 
+export { JournalCard, JournalDetails, JournalEdit } from './Journal';
+

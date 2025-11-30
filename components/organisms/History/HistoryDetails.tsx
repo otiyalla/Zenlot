@@ -140,7 +140,7 @@ export const HistoryDetails: React.FC<HistoryDetailsProps> = ({
             <>
               <Divider />
               <VStack space="xs">
-                <Text size="xs">{localize('journal.name')}</Text>
+                <Text size="xs">{localize('journal.title')}</Text>
                 <Text>{trade.plainText}</Text>
               </VStack>
             </>

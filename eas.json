@@ -7,7 +7,12 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "environment": "development"
+      "environment": "development",
+      "env": {
+        "EXPO_PUBLIC_AUTH_TOKEN": "zenlot-auth-token",
+        "EXPO_PUBLIC_AUTH_REFRESH_TOKEN": "zenlot-auth-token-refresh",
+        "EXPO_PUBLIC_USER_ID": "zenlot-user-id"
+      }
     },
     "ios-simulator": {
       "ios": {

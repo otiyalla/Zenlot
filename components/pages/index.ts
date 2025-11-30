@@ -7,3 +7,6 @@ export type { ProfilePageProps } from './ProfilePage';
 export { HistoryPage } from './HistoryPage';
 export type { HistoryPageProps, TradeHistoryItem } from './HistoryPage';
 
+export { JournalPage } from './JournalPage';
+export type { JournalPageProps } from './JournalPage';
+

@@ -43,11 +43,11 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
 
   useEffect(() => {
     if (!socket) return;
-    if (!available.length){
+    if (!available.length){/* 
       socket.emit('list-quotes', (data: any) =>{
         console.log('emmit list quotes', data);
         setLoading(true);
-      });
+      }); */
       socket.on('list-quote-update', (data) => {
         setAvailable(data);
         if(query.length > 0){

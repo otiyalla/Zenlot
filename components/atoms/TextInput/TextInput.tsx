@@ -101,6 +101,15 @@ export const TextInput: React.FC<TextInputProps> = ({
       errorText: {
         color: Colors[theme].error,
       },
+
+      iconView: {
+        position: 'absolute',
+        right: 12,
+        transform: [{ translateY: -12 }],
+        top: (
+          helperText ? '40%' : label?.length ? '63%' : '55%'
+        ),
+      },
     });
 
   
@@ -127,7 +136,7 @@ export const TextInput: React.FC<TextInputProps> = ({
           {...props}
         />
         {!!rightIcon && (
-          <View style={{ position: 'absolute', right: 12, top: (helperText ? '40%' : '55%'), transform: [{ translateY: -12 }] }}>
+          <View style={styles.iconView}>
             <TouchableOpacity onPress={props.onRightIconPress} accessible={true}>
             {rightIcon}
             </TouchableOpacity>

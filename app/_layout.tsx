@@ -4,7 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import '../global.css';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { GluestackUIProvider } from '@/components/design-system/ui';
 import { Loading }  from '@/components/atoms/Spinner';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {  AuthProvider } from '@/providers/AuthProvider';
@@ -12,7 +11,8 @@ import { UserProvider } from '@/providers/UserProvider';
 import { SafeAreaView, Text } from '@/components/atoms';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useColorScheme() as 'light' | 'dark';
+
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -23,8 +23,7 @@ export default function RootLayout() {
   
   return (
         <SafeAreaProvider>
-          <GluestackUIProvider mode={colorScheme as 'light' | 'dark'} >
-            <AuthProvider>
+          <AuthProvider>
               <UserProvider>
                 <Stack initialRouteName='(protected)'>
                   <Stack.Screen name='(protected)' options={{
@@ -39,8 +38,7 @@ export default function RootLayout() {
                 <StatusBar style='auto' />
               </UserProvider>
             </AuthProvider>
-          </GluestackUIProvider>
-        </SafeAreaProvider>
+            </SafeAreaProvider>
         
   );
 }

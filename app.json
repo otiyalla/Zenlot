@@ -14,7 +14,6 @@
     ],
     "splash": {
       "image": "./assets/images/splash/zenlot.png",
-      "imageWidth": 200,
       "resizeMode": "contain",
       "backgroundColor": "#001c34",
       "dark": {
@@ -26,8 +25,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.zenlot.app",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false,
-        "UIAccessibilityIsReduceMotionEnabled": false
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
