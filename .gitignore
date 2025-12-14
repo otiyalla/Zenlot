@@ -3,6 +3,8 @@
 # dependencies
 node_modules/
 
+.yarn/*
+
 # Expo
 .expo/
 dist/
@@ -32,6 +34,7 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
 
 # typescript
 *.tsbuildinfo
@@ -39,4 +42,11 @@ yarn-error.*
 # VS Code
 .vscode/
 
+# Coverage
+coverage/
+
 app-example
+.package-lock.json
+
+# Misc
+todo.md

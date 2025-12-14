@@ -1,17 +1,31 @@
 
 import React from 'react';
-import {View, Text} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-//TODO: History - Trading history, Jornel. success and performance metrics
+import { HistoryPage } from '@/components/pages';
+import { useTrade } from '@/providers/TradeProvider';
 
 export default function History() {
+  const { tradeHistory, refreshTrades } = useTrade();
+
+  const handleViewTrade = (tradeId: number) => {
+    // Navigate to trade details
+    console.log('View trade:', tradeId);
+  };
+
+  const handleRefresh = () => {
+    refreshTrades();
+  };
+
+  const handleFilterTrades = (filter: string) => {
+    // Filter trades
+    console.log('Filter trades:', filter);
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1, padding: 16 }}>
-      <View>
-        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>History</Text>
-        <Text style={{ marginTop: 8 }}>This is the history screen where you can view your trading history and performance metrics.</Text>
-      </View>
-    </SafeAreaView>
+    <HistoryPage
+      onRefresh={handleRefresh}
+      trades={tradeHistory}
+      onViewTrade={handleViewTrade}
+      onFilterTrades={handleFilterTrades}
+    />
   );
 }

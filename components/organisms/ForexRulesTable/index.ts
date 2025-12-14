@@ -1,0 +1,1 @@
+export { ForexRulesTable } from "./ForexRulesTable";

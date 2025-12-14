@@ -2,11 +2,36 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@pages/*": [
+        "./components/pages/*"
+      ],
+      "@organisms/*": [
+        "./components/organisms/*"
+      ],
+      "@templates/*": [
+        "./components/templates/*"
+      ],
+      "@molecules/*": [
+        "./components/molecules/*"
+      ],
+      "@atoms/*": [
+        "./components/atoms/*"
       ]
-    }
+    },
+    "module": "preserve",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "types": [
+      "react",
+      "react-native",
+      "jest"
+    ],
+    "skipLibCheck": true
   },
   "include": [
     "**/*.ts",
@@ -14,5 +39,8 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

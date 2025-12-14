@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header Component matches snapshot 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "height": 70,
+      "justifyContent": "center",
+      "width": "100%",
+    }
+  }
+>
+  <ViewManagerAdapter_ExpoImage
+    borderRadius={5}
+    containerViewRef={"[React.ref]"}
+    contentFit="cover"
+    contentPosition={
+      {
+        "left": "50%",
+        "top": "50%",
+      }
+    }
+    height={35}
+    nativeViewRef={"[React.ref]"}
+    onError={[Function]}
+    onLoad={[Function]}
+    onLoadStart={[Function]}
+    onProgress={[Function]}
+    placeholder={[]}
+    source={
+      [
+        {
+          "testUri": "../../../assets/images/zenlot_lightMono.png",
+        },
+      ]
+    }
+    style={
+      {
+        "borderRadius": 5,
+        "height": 35,
+        "width": 35,
+      }
+    }
+    testID="header-logo"
+    transition={null}
+    width={35}
+  />
+  <Text
+    style={
+      {
+        "color": "white",
+        "fontSize": 24,
+        "fontWeight": "bold",
+      }
+    }
+    testID="header-text"
+  >
+    Zenlot
+  </Text>
+</View>
+`;

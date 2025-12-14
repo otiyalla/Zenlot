@@ -1,7 +1,6 @@
-import { getPipDifference } from './utils';
 
-// filepath: /Users/otonyeiyalla/Projects/zenlot/zenlot/constants/utils.test.ts
-/*
+import { getPipDifference, getExecutionType } from './utils';
+
 describe('getPipDifference', () => {
   it('should calculate pip difference with default pips value', () => {
     const entryPrice = 1.2345;
@@ -39,4 +38,41 @@ describe('getPipDifference', () => {
     expect(result).toBe(0.6000);
   });
 });
-*/
+
+describe('getExecutionType', () => {
+  it('should return "buy-long" when TakeProfitPrice > entryPrice', () => {
+    expect(getExecutionType(1.2, 1.1, 1.3)).toBe('buy-long');
+  });
+
+  it('should return "buy-long" when TakeProfitPrice > stopLossPrice', () => {
+    expect(getExecutionType(1.2, 1.1, 1.15)).toBe('buy-long');
+  });
+
+  it('should return "sell" when TakeProfitPrice < entryPrice', () => {
+    expect(getExecutionType(1.2, 1.1, 1.0)).toBe('sell');
+  });
+
+  it('should return "sell" when stopLossPrice > entryPrice', () => {
+    expect(getExecutionType(1.2, 1.3, 1.1)).toBe('sell');
+  });
+
+  it('should return "sell" when TakeProfitPrice < stopLossPrice', () => {
+    expect(getExecutionType(1.2, 1.3, 1.1)).toBe('sell');
+  });
+
+  it('should return "buy" when TakeProfitPrice === entryPrice and stopLossPrice < entryPrice', () => {
+    expect(getExecutionType(1.2, 1.1, 1.2)).toBe('buy');
+  });
+
+  it('should return "sell" when stopLossPrice === entryPrice and TakeProfitPrice < entryPrice', () => {
+    expect(getExecutionType(1.2, 1.2, 1.1)).toBe('sell');
+  });
+
+  it('should return "buy" as default case', () => {
+    expect(getExecutionType(1.2, 1.2, 1.2)).toBe('buy');
+  });
+
+  it('should handle undefined stopLossPrice and TakeProfitPrice gracefully', () => {
+    expect(getExecutionType(1.2)).toBe('buy');
+  });
+});
