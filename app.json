@@ -8,10 +8,6 @@
     "scheme": "zenlot",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "assetsBundlePatterns": [
-      "**/*",
-      "assts/*"
-    ],
     "splash": {
       "image": "./assets/images/splash/zenlot.png",
       "resizeMode": "contain",
@@ -34,7 +30,10 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.zenlot.app"
+      "package": "com.zenlot.app",
+      "experimental": {
+        "newArchitecture": true
+      }
     },
     "web": {
       "bundler": "metro",

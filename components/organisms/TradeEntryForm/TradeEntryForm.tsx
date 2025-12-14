@@ -7,7 +7,7 @@ import { useUser } from '@/providers/UserProvider';
 import { useTranslate } from '@/hooks/useTranslate';
 import { getExecutionType, getRatio, getPipValue } from '@/constants';
 import { useWebsocket } from '@/providers/WebsocketProvider';
-import { IQuote } from '@/types';
+import { AvailableSymbolsProps } from '@/types';
 
 export interface TradeEntryFormProps {
   onSymbolSelect?: (symbol: string) => void;
@@ -24,8 +24,8 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
   const { user } = useUser();
   const { localize } = useTranslate();
   const { socket } = useWebsocket(); 
-  const [available, setAvailable] = useState<IQuote[]>([]);
-  const [filteredResults, setFilteredResults] = useState<IQuote[]>([]);
+  const [available, setAvailable] = useState<AvailableSymbolsProps[]>([]);
+  const [filteredResults, setFilteredResults] = useState<AvailableSymbolsProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const { entry: entryPrice, stopLoss, takeProfit, symbol, exchangeRate } = trade;
   const [query, setQuery] = useState<string>(symbol ?? '');
@@ -43,12 +43,18 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
 
   useEffect(() => {
     if (!socket) return;
-    if (!available.length){/* 
+    if (!available.length){
       socket.emit('list-quotes', (data: any) =>{
         console.log('emmit list quotes', data);
         setLoading(true);
-      }); */
-      socket.on('list-quote-update', (data) => {
+      });
+      
+      socket.on('list-quote-update', (data, error) => {
+        if(error){
+          console.log('error', error);
+          setLoading(false);
+          return;
+        }
         setAvailable(data);
         if(query.length > 0){
           const filtered = data.filter((item: any) => onSearch(item, query));
@@ -69,21 +75,30 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
   useEffect(() => {
     if (!socket) return;
     try {
-        interface PriceFeedData {
-            ticker: string;
-            bid: number;
-            ask: number;
-            open: number;
-            high: number;
-            low: number;
-            change: number;
-            date: string;
-        }
+      
+      interface PriceFeedData {
+        symbol: string;
+        name: string;
+        price: number;
+        exchange: string;
+        volume: number;
+        dayLow: number;
+        dayHigh: number;
+        yearHigh: number;
+        yearLow: number;
+        priceAvg50: number;
+        priceAvg200: number;
+        changePercentage: number;
+        open: number;
+        previousClose: number;
+        change: number;
+        timestamp: number;
+      }
     
         socket.on('quote-update', (data: PriceFeedData[]) => {
             const [instrument] = data;
-            if (!!instrument?.ticker) {
-                const price = execution === 'buy' ? instrument.ask : instrument.bid;
+            if (!!instrument?.price) {
+                const price = instrument.price;
                 setEntry(price.toString());
                 const pips = getPipValue(price);
                 setTrade((prev) => ({ ...prev, entry: price, pips: Number(pips) }));
@@ -93,9 +108,9 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
 
         socket.on('exchange-rate-update', (data: PriceFeedData[]) => {
             const [instrument] = data;
-            if (!!instrument?.ticker) {
-                const { open } = instrument;
-                setTrade((prev) => ({...prev, exchangeRate: Number(open) }))
+            if (!!instrument?.price) {
+                const { price } = instrument;
+                setTrade((prev) => ({...prev, exchangeRate: Number(price) }))
             }
         });
 
@@ -124,14 +139,14 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
     }
   };
 
-  const onSearch = useCallback((result: IQuote, pair: string) => {
+  const onSearch = useCallback((result: AvailableSymbolsProps, pair: string) => {
         return (result.symbol.toLowerCase().includes(pair.toLowerCase())
-        || result.name.toLocaleLowerCase().includes(pair.toLocaleLowerCase()))     
+        || result.currency.toLocaleLowerCase().includes(pair.toLocaleLowerCase()))     
   }, [query]);
 
   const getExhangeRate = (currency: string) => {
     if (currency !== accountCurrency.toUpperCase()){
-        const symbol: string = `${currency}${accountCurrency.toUpperCase()}`
+        const symbol: string = `${currency}${accountCurrency.toUpperCase()}`;
         socket?.emit('get-exchange-rate', symbol);
     }
   }
@@ -139,10 +154,11 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
   const handleSymbolSelect = (item: any) => {
     const newSymbol = item.symbol;
     setTrade((prev) => ({ ...prev, symbol: newSymbol.toUpperCase()}));
+    console.log('the query: ', query)
     setQuery(newSymbol);
     const currency = item.currency;
     getExhangeRate(currency);
-    socket?.emit('get-quote', symbol);
+    socket?.emit('get-quote', newSymbol);
 
     onSymbolSelect?.(newSymbol);
   };

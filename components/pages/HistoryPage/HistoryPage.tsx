@@ -27,20 +27,20 @@ export interface TradeHistoryItem extends TradeEntryState {
 export interface HistoryPageProps {
   trades?: TradeHistoryItem[];
   onViewTrade?: (tradeId: number) => void;
-  onExportHistory: () => void;
   onFilterTrades?: (filter: string) => void;
   testID?: string;
   pageSize?: number;
   onLoadMore?: () => void;
   loading?: boolean;
+  onRefresh?: () => void;
 }
 
 export const HistoryPage: React.FC<HistoryPageProps> = ({
   trades = [],
   onViewTrade,
-  onExportHistory,
   onFilterTrades,
   testID,
+  onRefresh,
   pageSize = 5,
   onLoadMore,
   loading = false,
@@ -52,7 +52,6 @@ export const HistoryPage: React.FC<HistoryPageProps> = ({
   const [visibleCount, setVisibleCount] = useState(pageSize);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const theme = Colors[useColorScheme() as 'light' | 'dark'];
-  const [ isOpen, setIsOpen] = useState<boolean>(false);
   const [ viewTradeId, setViewTradeId] = useState<number | null>(null);
   const [ editTradeId, setEditTradeId] = useState<number | null>(null);
 
@@ -258,7 +257,7 @@ export const HistoryPage: React.FC<HistoryPageProps> = ({
   }
 
   return (
-    <PageTemplate title={localize('history')} testID={testID}>
+    <PageTemplate onRefresh={onRefresh} title={localize('history')} testID={testID}>
       <VStack className="flex-1">
 
 

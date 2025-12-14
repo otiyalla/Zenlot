@@ -2,7 +2,7 @@ import React, { ComponentProps } from "react";
 import {  StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { SafeAreaProvider as RNSafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context';
 
 export type SafeAreaViewProps = ComponentProps<typeof RNSafeAreaView>
 

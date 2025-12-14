@@ -44,18 +44,18 @@ export const JournalDetails: React.FC<JournalDetailsProps> = ({
   const updateDate = journal.updatedAt ? formatDate(new Date(journal.updatedAt), language as any, true) : '';
 
   const sideOptions = [
-    onPin && { 
+    (onPin && !journal.tradeId) && { 
       onPress: () => onPin(), 
       icon: <Icon size={journal.isPinned ? 16 : 20} style={{ bottom: 1 }} library={journal.isPinned ? 'fontawesome6' : 'ionicons'} name={journal.isPinned ? 'thumbtack-slash' : 'pin-outline'}/>,
       label: journal.isPinned ? localize('unpin') : localize('pin')
     },
-    onArchive && {
+    (onArchive && !journal.tradeId) && {
       onPress: () => onArchive(),
       icon: <Icon size={20} style={{ bottom: 1 }} library='ionicons' name={journal.isArchived ? 'folder-open-outline' : 'archive-outline'} />,
       label: journal.isArchived ? localize('unarchive') : localize('archive')
     },
     { onPress: () => onEdit(journal.id!), icon: <Icon library='gluestack' name='edit' as={EditIcon} />, label: localize('edit') },
-    { onPress: () => onDelete(journal.id!), icon: <Icon library='gluestack' name='trash' as={TrashIcon} />, label: localize('delete') }
+    (!journal.tradeId) && { onPress: () => onDelete(journal.id!), icon: <Icon library='gluestack' name='trash' as={TrashIcon} />, label: localize('delete') }
   ].filter(Boolean);
 
   return (

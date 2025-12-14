@@ -32,7 +32,7 @@ export const JournalCard: React.FC<JournalCardProps> = ({
   const { user } = useUser();
   const language = user?.language || 'en';
   
-  const content = journal.title || extractPlainTextFromLexical(journal.editorState, journal.plainText) || '';
+  const content = extractPlainTextFromLexical(journal.editorState, journal.plainText) || '';
   const truncatedContent = content.length > 150 ? content.substring(0, 150) + '...' : content;
   const displayDate = journal.createdAt ? formatDate(new Date(journal.createdAt), language as any) : '';
 

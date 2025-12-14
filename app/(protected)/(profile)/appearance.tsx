@@ -6,6 +6,7 @@ import { useUser } from '@/providers/UserProvider';
 import { Colors, languageOptions, LanguageOptionType } from '@/constants';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useColorScheme as useRNColorSchema } from 'react-native';
+
 import {
   Box,
   VStack,
@@ -36,9 +37,9 @@ export default function Appearance() {
   const { localize } = useTranslate();
   const { user, update } = useUser();
   const scheme = useColorScheme() as 'light' | 'dark';
-  const theme = Colors[scheme ?? 'light'];
-  const systemSchema = useRNColorSchema();
-  const systemTheme = Colors[systemSchema ?? 'light'];
+  const theme = Colors[scheme];
+  const systemSchema = useRNColorSchema() as 'light' | 'dark';
+  const systemTheme = Colors[systemSchema];
 
   const [language, setLanguage] = useState<LanguageOptionType>(user?.language);
   const [appearance, setAppearance] = useState<AppearanceMode>((user?.theme as AppearanceMode) || 'system');
@@ -46,8 +47,8 @@ export default function Appearance() {
 
   const PreviewTheme = useMemo(() => {
     if (appearance === 'system') return systemTheme;
-    return Colors[appearance];
-  }, [appearance, theme]);
+    else return Colors[appearance];
+  }, [appearance, theme, systemTheme]);
 
   const handleSave = async () => {
     try {
@@ -81,7 +82,7 @@ export default function Appearance() {
             </Text>
           </VStack>
           
-          <Box style={{ ...styles.card, borderColor: Colors[scheme].borderColor, backgroundColor: Colors[scheme].secondary ?? Colors[scheme].background }}>
+          <Box style={{ ...styles.card, borderColor: theme.borderColor, backgroundColor: theme.secondary ?? theme.background }}>
             <VStack space="md">
               <HStack style={{alignItems: "center", justifyContent: "space-between"}} >
                 <Text variant="heading" size="xl" weight="semibold">
@@ -108,7 +109,7 @@ export default function Appearance() {
             </VStack>
           </Box>
 
-          <Box style={{ ...styles.card, borderColor: Colors[scheme].borderColor, backgroundColor: Colors[scheme].secondary ?? Colors[scheme].background }}>
+          <Box style={{ ...styles.card, borderColor: theme.borderColor, backgroundColor: theme.secondary ?? theme.background }}>
             <VStack space="md">
               <HStack style={{alignItems: "center", justifyContent: "space-between"}} >
               <Text variant="heading" size="xl" weight="semibold">
@@ -162,7 +163,7 @@ export default function Appearance() {
                   style={{
                     borderRadius: 12,
                     borderWidth: 1,
-                    borderColor: Colors[scheme].borderColor,
+                    borderColor: theme.borderColor,
                     overflow: 'hidden',
                   }}
                 >
@@ -197,8 +198,8 @@ export default function Appearance() {
                   variant="danger"
                   title={localize('common.cancel')}
                   onPress={handleCancel}
-                  backgroundColor={Colors[scheme].danger}
-                  color={Colors[scheme].invesetext}
+                  backgroundColor={theme.danger}
+                  color={theme.invesetext}
                 />
               </HStack>
         </VStack>

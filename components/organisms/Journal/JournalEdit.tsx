@@ -97,6 +97,7 @@ export const JournalEdit: React.FC<JournalEditProps> = ({
     }
 
     const journalData: Partial<JournalEntry> = {
+      ...(journal?.tradeId ? { tradeId: journal.tradeId } : {}),
       title: title.trim() || undefined,
       symbol: symbol.trim(),
       tags,
@@ -143,6 +144,7 @@ export const JournalEdit: React.FC<JournalEditProps> = ({
             />
 
             <TextInput
+              editable={!journal?.tradeId}
               label={localize('symbol')}
               value={symbol}
               onChangeText={setSymbol}

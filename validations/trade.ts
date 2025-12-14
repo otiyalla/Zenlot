@@ -7,6 +7,7 @@ export const createTradeValidation = z.object({
     pips: z.number().gt(0).register(tradeValidationRegistry, { title: "Pips", description: "Trade pips" }),
     execution: z.enum(['buy', 'sell']).register(tradeValidationRegistry, { title: "Execution", description: "Trade execution type (buy or sell)" }),
     exchangeRate: z.number().register(tradeValidationRegistry, { title: "Exchange Rate", description: "Trade exchange rate" }),
+    accountCurrency: z.string().register(tradeValidationRegistry, { title: "Account Currency", description: "Trade account currency at the time the trade was created" }),
     rr: z.number().gt(0).register(tradeValidationRegistry, { title: "Risk-Reward Ratio", description: "Trade risk-reward ratio" }),
     risk: z.number().gt(0).register(tradeValidationRegistry, { title: "Risk", description: "Trade risk amount" }),
     reward: z.number().gt(0).register(tradeValidationRegistry, { title: "Reward", description: "Trade reward amount" }),
@@ -24,7 +25,7 @@ export const createTradeValidation = z.object({
 });
 
 export const updateTradeValidation = createTradeValidation.extend({
-    id: z.number().gt(0).register(tradeValidationRegistry, {title: "id", description: "unique trade id"}),
+    id: z.number().gt(0).register(tradeValidationRegistry, { title: "id", description: "unique trade id" }),
     createdAt: z.string().register(tradeValidationRegistry, { title: "Create at", description: "The trade created date" }),
     updatedAt: z.string().register(tradeValidationRegistry, { title: "Updated at", description: "The trade updated date" }),
 })

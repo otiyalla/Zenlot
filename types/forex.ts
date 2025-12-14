@@ -29,8 +29,8 @@ export interface ITrade {
 
 export type TradeStatus = 'open' | 'close' | 'closed' | 'reached_tp' | 'reached_sl' | 'pending' | 'closed_in_profit' | 'closed_in_loss';
 
-export interface TradeEntryState extends ITrade {    
-    id: number; 
+export interface TradeEntryState extends ITrade {
+    id: number;
     rr: number;
     risk: number;
     reward: number;
@@ -38,6 +38,7 @@ export interface TradeEntryState extends ITrade {
     updatedAt: Date | string;
     tags?: string[];
     status: TradeStatus;
+    accountCurrency: string;
     closedAt?: Date | string,
     closedPrice?: number,
     closedExchangeRate?: number,
@@ -52,18 +53,15 @@ export interface ForexRule {
 }
 
 export interface ForexRulesTableProps {
-  takeProfitRules: ForexRule[];
-  stopLossRules: ForexRule[];
-  onTakeProfitChange: (rules: ForexRule[]) => void;
-  onStopLossChange: (rules: ForexRule[]) => void;
+    takeProfitRules: ForexRule[];
+    stopLossRules: ForexRule[];
+    onTakeProfitChange: (rules: ForexRule[]) => void;
+    onStopLossChange: (rules: ForexRule[]) => void;
 }
 
-export interface IQuote {
+export interface AvailableSymbolsProps {
     symbol: string;
-    name: string;
     currency: string;
-    stockExchange: string;
-    exchangeShortName: string;
 }
 
 export interface ExecutionProps {
@@ -94,9 +92,9 @@ export interface TradeContextType {
     submitTrade: (validated: Partial<TradeEntryState>) => void;
     deleteTrade: (id: number) => void;
     duplicateTrade: (id: number) => void;
-    editTrade: (id: number, update: TradeEntryState ) => void;
+    editTrade: (id: number, update: TradeEntryState) => void;
     refreshTrades: () => void;
-    currentRate: (symbol: string) => Promise<{ask: number, open: number, bid: number} | undefined>;
-    getAnalysis: (analysis_type: string) => {trades: number, gain: number, loss: number, net: number}
+    currentRate: (symbol: string) => Promise<{ ask: number, open: number, bid: number } | undefined>;
+    getAnalysis: (analysis_type: string) => { trades: number, gain: number, loss: number, net: number }
     setTrade: React.Dispatch<React.SetStateAction<TradeEntryState | ITrade>>
 }

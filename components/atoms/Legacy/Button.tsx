@@ -3,8 +3,7 @@ import { Button, View } from 'react-native';
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { StyleSheet } from "react-native";
-import { HStack } from '@/components/design-system/ui';
-//TODO: Customize all your atoms and add your own styles
+
 type Props = ComponentProps<typeof Button> ;
 
 export function ButtonComponent({ onPress, title, ...rest }: Props) {
@@ -13,8 +12,6 @@ export function ButtonComponent({ onPress, title, ...rest }: Props) {
     buttonContainer: {
       alignItems: 'center',
       justifyContent: 'center',
-      //width: '100%',
-      //padding: 10, 
     },
     roundedButton: {
       borderRadius: 15,
@@ -40,10 +37,9 @@ export function ButtonComponent({ onPress, title, ...rest }: Props) {
 }
 //TODO: Few app details
 // Navigation tabs - Home, Profile, History, Analytics
-
+//TODO:  success and performance metrics
 
 // Analytics - Charts, graphs, and analysis tools, total trades, account balance, total pnl, win rate
-// History - List of past trades with details like entry/exit points, pnl, date/time
 // Profile - User info, settings, subscription management
 // Home - Dashboard with overview of account stats, recent trades, quick actions
 // ability to view all journal entries and performance metrics

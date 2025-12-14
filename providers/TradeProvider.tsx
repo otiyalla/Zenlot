@@ -22,6 +22,7 @@ const TradeContext = createContext<TradeContextType | undefined>(undefined);
 
 // Provider component
 const TradeProvider = ({ children }: { children: ReactNode }) => {
+    
     const [trade, setTrade] = useState<TradeEntryState | ITrade>(defaultTrade);
     const [tradeHistory, setTradeHistory] = useState<TradeEntryState[]>([]);
     const { getTrades, getPrice, getFXRate, deleteTrade: tradeDelete, createTrade, updateTrade } = tradeApi;
@@ -29,7 +30,14 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
     const { language, accountCurrency } = user ?? {language: 'en'};
 
     useEffect(() => {
-        refreshTrades();
+        const loadTrades = async () => {
+            try {
+                await refreshTrades();
+            } catch (error) {
+                console.error('❌ [TradeProvider] Failed to load trades:', error);
+            }
+        };
+        loadTrades();
     }, []);
 
     const refreshTrades = async () => {
@@ -38,7 +46,7 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
             setTradeHistory(trades);
             await refreshAuthToken();
         } catch (error) {
-            console.error('Failed to refresh trades:', error);
+            setTradeHistory([]);
         }
     };
 
@@ -76,9 +84,8 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
         const pipsData = trades.reduce((acc: IAnalysis, trade: any, i: number, all: TradeEntryState[]) => {
             acc.trades = all.length;
             if(WIN_STATUSES.includes(trade?.status as TradeStatus)){
-                const {symbol, entry, takeProfit, lot, closedExchangeRate} = trade;//const loss = formatNumberByLocale(currencyValue, language, accountCurrency);
+                const {symbol, entry, takeProfit, lot, closedExchangeRate} = trade;
                 const currencyValue = getCurrencyValue(symbol, entry, takeProfit.value, lot, closedExchangeRate);
-                //const value = formatNumberByLocale(currencyValue, language, accountCurrency);
                 acc.gain+=currencyValue
             }
             if(LOSS_STATUSES.includes(trade?.status as TradeStatus)){
@@ -138,7 +145,7 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const submitTrade = async (validated: Partial<TradeEntryState>) => {
-        const trade = { ...validated, status: "open" as TradeEntryState['status']};
+        const trade = { ...validated, status: "open" as TradeEntryState['status'], accountCurrency };
         try{
             const newTrade = await createTrade(trade);
             console.log('The new trade:', newTrade);

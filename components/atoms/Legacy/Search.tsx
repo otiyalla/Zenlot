@@ -4,22 +4,21 @@ import { TextInput} from '@/components/atoms/TextInput';
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { useWebsocket } from '@/providers/WebsocketProvider';
-import { IQuote } from '@/types';
 
 interface SearchProps {
     query: string;
     onChangeText: (text: string) => void;
     onSelect: (item: unknown) => void;
     placeholderText: string;
-    onSearch: (item: IQuote, text: string) => boolean;
-    renderSearchItem: (item: IQuote) => React.ReactNode;
+    onSearch: (item: any, text: string) => boolean;
+    renderSearchItem: (item: any) => React.ReactNode;
 }
 
 
 const Search = ({ query, onChangeText, onSelect, onSearch, placeholderText, renderSearchItem }: SearchProps) => {
     const colorScheme = useColorScheme();
-    const [filteredResults, setFilteredResults] = useState<IQuote[]>([]);
-    const [available, setAvailable] = useState<IQuote[]>([]);
+    const [filteredResults, setFilteredResults] = useState<any[]>([]);
+    const [available, setAvailable] = useState<any[]>([]);
     const [showResults, setShowResults] = useState(false);
     const { socket } = useWebsocket();
     const [isFocus, setFocus] = useState<boolean>(false);
@@ -85,7 +84,7 @@ const Search = ({ query, onChangeText, onSelect, onSearch, placeholderText, rend
     }
 
 
-    const renderItem = ({item}: {item: IQuote & {id: string | number}}) => {
+    const renderItem = ({item}: {item: any & {id: string | number}}) => {
         return (
             <TouchableOpacity
                 key={`zenlot-search-${item.id}`}
@@ -101,7 +100,7 @@ const Search = ({ query, onChangeText, onSelect, onSearch, placeholderText, rend
 
     
     const renderItems = filteredResults.map(
-        (item: IQuote, id: number) => renderItem({ item: { id, ...item } })
+        (item: any, id: number) => renderItem({ item: { id, ...item } })
     )
 
     return (
