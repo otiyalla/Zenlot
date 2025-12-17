@@ -61,6 +61,7 @@ export const TakeProfitEntry = ({ exchangeRate, execution }: ExecutionProps) => 
                 inputMode='decimal'
                 keyboardType='decimal-pad'
                 aria-label={localize('placeholder.profit')}
+                testID='take-profit-input'
             />
             {(isFocused ) && (
                 <Box className="mt-1 br-md shadow-2">

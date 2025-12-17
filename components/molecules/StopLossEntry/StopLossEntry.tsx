@@ -59,7 +59,7 @@ export const StopLossEntry = ({ execution, exchangeRate}: ExecutionProps) => {
                 inputMode='decimal'
                 keyboardType='decimal-pad'
                 aria-label={localize('placeholder.loss')}
-                
+                testID='stop-loss-input'
             />
             {(isFocused ) && (
                 <Box className="p-2 br-md shadow-2">
