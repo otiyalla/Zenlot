@@ -7,8 +7,7 @@ import { getPipDifference, getSuggestedTakeProfit, getCurrencyValue, formatNumbe
 import { useTranslate } from '@/hooks/useTranslate';
 import { useTrade } from '@/providers/TradeProvider';
 import { useUser } from '@/providers/UserProvider';
-import { TradeEntryState, ExecutionProps } from '@/types';
-
+import { ExecutionProps } from '@/types';
 
 export const TakeProfitEntry = ({ exchangeRate, execution }: ExecutionProps) => {
     const { trade, setTrade} = useTrade();
@@ -21,7 +20,8 @@ export const TakeProfitEntry = ({ exchangeRate, execution }: ExecutionProps) => 
     const { rules, language, accountCurrency } = user;
     const { take_profit } = rules.forex;
     const currencyValue = getCurrencyValue(symbol, entry, Number(value), lot, exchangeRate);
-    const gain = formatNumberByLocale(currencyValue, language, accountCurrency);const pips = getPipDifference(entry, Number(value), pipValue);
+    const gain = formatNumberByLocale(currencyValue, language, accountCurrency);
+    const pips = getPipDifference(entry, Number(value), pipValue);
     const takeProfit = getSuggestedTakeProfit(execution, entry, pipValue, take_profit);
     
     const handleChange = (text: string) => {
@@ -50,8 +50,8 @@ export const TakeProfitEntry = ({ exchangeRate, execution }: ExecutionProps) => 
     ));
 
     return (
-        <Box className='padding-2 border rounded' style={{ borderColor: 'green' }}>
-            <Text bold className='text-lg m-2'>{localize('forex.take_profit')}</Text>
+        <Box className="p-3 border border-outline-200 rounded-lg" style={{ borderColor: 'green' }}>
+            <Text bold >{localize('forex.take_profit')}</Text>
             <TextInput
                 placeholder={localize('placeholder.profit')}
                 value={value}
@@ -63,12 +63,12 @@ export const TakeProfitEntry = ({ exchangeRate, execution }: ExecutionProps) => 
                 aria-label={localize('placeholder.profit')}
             />
             {(isFocused ) && (
-                <Box className="p-2 br-md shadow-2">
+                <Box className="mt-1 br-md shadow-2">
                     {suggestedTakeProfit}
                 </Box>
             )}
             { !!value.length && !isNaN(Number(value)) && (
-                <Box className="p-2">
+                <Box className="border-t border-outline-500 mt-2 pt-2">
                     <Text>{localize('forex.pips')}: {pips}</Text>
                     <Text>{localize('forex.gain')}: {gain}</Text>
                 </Box>

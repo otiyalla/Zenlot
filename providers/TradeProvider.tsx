@@ -17,18 +17,15 @@ const defaultTrade: ITrade = {
 };
 
 
-// Create the context
 const TradeContext = createContext<TradeContextType | undefined>(undefined);
 
-// Provider component
 const TradeProvider = ({ children }: { children: ReactNode }) => {
-    
-    const [trade, setTrade] = useState<TradeEntryState | ITrade>(defaultTrade);
-    const [tradeHistory, setTradeHistory] = useState<TradeEntryState[]>([]);
-    const { getTrades, getPrice, getFXRate, deleteTrade: tradeDelete, createTrade, updateTrade } = tradeApi;
     const { refreshAuthToken, user } = useAuth();
     const { language, accountCurrency } = user ?? {language: 'en'};
-
+    const [trade, setTrade] = useState<TradeEntryState | ITrade>({ ...defaultTrade });
+    const [tradeHistory, setTradeHistory] = useState<TradeEntryState[]>([]);
+    const { getTrades, getPrice, getFXRate, deleteTrade: tradeDelete, createTrade, updateTrade } = tradeApi;
+    
     useEffect(() => {
         const loadTrades = async () => {
             try {
@@ -68,7 +65,7 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
             if(["reached_sl", "closed_in_loss"].includes(trade?.status as TradeStatus)){
                 acc.loss += trade.stopLoss.pips;
             }
-            acc.net = acc.gain - acc.loss;
+            acc.net = Number((acc.gain - acc.loss).toFixed(2));
             return acc;
         }, {trades: 0, gain: 0, loss: 0, net: 0});
         return pipsData as IAnalysis;

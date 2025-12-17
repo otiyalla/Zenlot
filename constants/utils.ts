@@ -16,6 +16,12 @@ export function formatNumberByLocale(number: number, language: keyof typeof lang
   }).format(number);
 }
 
+export const sanitized = (text: string) => {
+    const sanitized = text.replace(/[^0-9.]/g, ''); // Only allow digits and one dot
+    const normalized = sanitized.replace(/(\..*?)\..*/g, '$1'); // Only one dot allowed
+    return normalized;
+};
+
 export function parseErrors(errors: {}[]): {errorFields: string[], errorMessage: {[key: string]: string}} {
     const fields = new Set<string>();
     const errorMessage: { [key: string]: string } = {};

@@ -5,7 +5,7 @@ import { SearchInput, StopLossEntry, TakeProfitEntry, TradeRatio, PipInfo, Execu
 import { useTrade } from '@/providers/TradeProvider';
 import { useUser } from '@/providers/UserProvider';
 import { useTranslate } from '@/hooks/useTranslate';
-import { getExecutionType, getRatio, getPipValue } from '@/constants';
+import { getExecutionType, getRatio, getPipValue, sanitized } from '@/constants';
 import { useWebsocket } from '@/providers/WebsocketProvider';
 import { AvailableSymbolsProps } from '@/types';
 
@@ -30,11 +30,6 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
   const { entry: entryPrice, stopLoss, takeProfit, symbol, exchangeRate } = trade;
   const [query, setQuery] = useState<string>(symbol ?? '');
   const { accountCurrency } = user;
-  const sanitized = (text: string) => {
-      const sanitized = text.replace(/[^0-9.]/g, ''); // Only allow digits and one dot
-      const normalized = sanitized.replace(/(\..*?)\..*/g, '$1'); // Only one dot allowed
-      return normalized;
-  };
   const [entry, setEntry] = useState<string>(entryPrice ? entryPrice.toString() : '');
   const { risk, reward } = getRatio(stopLoss.pips, takeProfit.pips);
   const execution = getExecutionType(Number(entryPrice), stopLoss.value, takeProfit.value);
@@ -135,7 +130,7 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
     if (query.length > 0) {
       const filtered = available.filter((item: any) => onSearch(item, query));
       setFilteredResults(filtered);
-      setTrade((prev) => ({ ...prev, symbol: query.toUpperCase() }));
+      setTrade((prev) => ({ ...prev, symbol: query.toUpperCase(), accountCurrency }));
     }
   };
 
@@ -153,7 +148,7 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
 
   const handleSymbolSelect = (item: any) => {
     const newSymbol = item.symbol;
-    setTrade((prev) => ({ ...prev, symbol: newSymbol.toUpperCase()}));
+    setTrade((prev) => ({ ...prev, symbol: newSymbol.toUpperCase(), accountCurrency}));
     console.log('the query: ', query)
     setQuery(newSymbol);
     const currency = item.currency;
@@ -176,7 +171,7 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
   };
 
   const handleSearch = (query: string) => {
-    setTrade((prev) => ({ ...prev, symbol: query.toUpperCase() }));
+    setTrade((prev) => ({ ...prev, symbol: query.toUpperCase(), accountCurrency }));
   };
 
   const renderSearchResult = (item: any) => (

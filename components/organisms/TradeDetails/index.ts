@@ -1,2 +1,3 @@
-export { TradeDetails } from './TradeDetails';
-export type { TradeDetailsProps } from './TradeDetails';
+export { TradeEditForm } from './TradeEditForm';
+export { TradeEditHeader } from './TradeEditForm';
+export type { TradeEditFormProps } from './TradeEditForm';

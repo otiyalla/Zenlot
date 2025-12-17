@@ -1,17 +1,21 @@
 import React from 'react'
 import { Modal as GSModal, ModalBackdrop, ModalContent, ModalCloseButton, ModalHeader, ModalBody, ModalFooter } from "@/components/design-system/ui";
-import { Center } from "@/components/design-system/ui";
-import { Heading } from "@/components/design-system/ui";
-import { Icon, CloseIcon } from "@/components/design-system/ui";
-import { Button, ButtonText } from "@/components/design-system/ui";
+import { 
+    Center, Heading,
+    Icon, CloseIcon,
+    Button, ButtonText
+} from "@/components/design-system/ui";
 import { useTranslate } from '@/hooks/useTranslate';
+import { DimensionValue } from 'react-native';
 
 export interface ModalProps {
   children: React.ReactNode;
   isOpen: boolean;
   showHeader?: boolean;
   headerText?: string;
+  headerNode?: React.ReactNode;
   size?: "xs" | "sm" | "md" | "lg" | "full";
+  contentHeight?: DimensionValue;
   testID?: string;
   onClose: () => void;
   footer: 
@@ -22,7 +26,7 @@ export interface ModalProps {
   
 }
 
-export const Modal: React.FC<ModalProps> = ({ testID, size, isOpen, onClose, showHeader, headerText, footer, children }) => {
+export const Modal: React.FC<ModalProps> = ({ testID, size, contentHeight, isOpen, onClose, showHeader, headerText, headerNode, footer, children }) => {
     const { localize } = useTranslate();
     const defaultFooter = [
         {
@@ -30,6 +34,14 @@ export const Modal: React.FC<ModalProps> = ({ testID, size, isOpen, onClose, sho
             onClick: onClose
         },
     ];
+
+    const header = headerNode ? headerNode : headerText ? (
+        <Heading size="md" className="text-typography-950">
+            {headerText}
+        </Heading>
+    ) : null;
+
+    const height = !!contentHeight ? contentHeight : 'auto';
 
   return (
     <Center className='h-[300px]'>
@@ -43,14 +55,9 @@ export const Modal: React.FC<ModalProps> = ({ testID, size, isOpen, onClose, sho
             testID={testID} 
         >
             <ModalBackdrop />
-            <ModalContent>
+            <ModalContent testID={`${testID}-content`} style={{ height }}>
                 <ModalHeader>
-                    {showHeader && (
-                        <Heading size="md" className="text-typography-950">
-                            {headerText}
-                            </Heading>
-                        )
-                    }
+                    {showHeader && header}
                     <ModalCloseButton >
                         <Icon as={CloseIcon} size="md"
                         className="stroke-background-400 group-[:hover]/modal-close-button:stroke-background-700 group-[:active]/modal-close-button:stroke-background-900 group-[:focus-visible]/modal-close-button:stroke-background-900"/>

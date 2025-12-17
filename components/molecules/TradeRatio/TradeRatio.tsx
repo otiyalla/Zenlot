@@ -7,11 +7,10 @@ import { useTrade } from '@/providers/TradeProvider';
 
 export const TradeRatio: React.FC<TradeRatioProps> = ({ risk, reward }) => {
     const { localize } = useTranslate();
-    const { setTrade, trade } = useTrade();
+    const { setTrade } = useTrade();
 
     useEffect(() => {
         setTrade((prev) => ({ ...prev, rr: reward / risk, reward, risk  }));
-
     }, [risk, reward]);
     
     return (
