@@ -1,4 +1,4 @@
-import React, { useState, useCallback, use } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   HStack, VStack, Text,
   Badge, BadgeText, Divider, Box
@@ -63,12 +63,12 @@ export const TradeEditForm: React.FC<TradeEditFormProps> = ({ toggleNote }) => {
   const [lotSize, setLotSize] = useState<string>(lot.toString());
   const [tp, setTP] = useState<string>(takeProfit?.value ? takeProfit.value.toString() : '');
   const [sl, setSL] = useState<string>(stopLoss?.value ? stopLoss.value.toString() : '');
-  const gainCurrency = getCurrencyValue(symbol, entryPrice, Number(tp), lot, exchangeRate);    
-  const lossCurrency = getCurrencyValue(symbol, entryPrice, Number(sl), lot, exchangeRate);    
-  const gain = formatNumberByLocale(gainCurrency, language, accountCurrency);
-  const loss = formatNumberByLocale(lossCurrency, language, accountCurrency);
-  const gainpips = getPipDifference(entryPrice, Number(tp), pips);
-  const losspips = getPipDifference(entryPrice, Number(sl), pips);
+  const gainCurrency = useMemo(() => getCurrencyValue(symbol, entryPrice, Number(tp), lot, exchangeRate), [symbol, entryPrice, tp, lot, exchangeRate]);
+  const lossCurrency = useMemo(() => getCurrencyValue(symbol, entryPrice, Number(sl), lot, exchangeRate), [symbol, entryPrice, sl, lot, exchangeRate]);
+  const gain = useMemo(() => formatNumberByLocale(gainCurrency, language, accountCurrency), [gainCurrency, language, accountCurrency]);
+  const loss = useMemo(() => formatNumberByLocale(lossCurrency, language, accountCurrency), [lossCurrency, language, accountCurrency]);
+  const gainpips = useMemo(() => getPipDifference(entryPrice, Number(tp), pips), [entryPrice, tp, pips]);
+  const losspips = useMemo(() => getPipDifference(entryPrice, Number(sl), pips), [entryPrice, sl, pips]);
   const { reward } = getRatio(stopLoss.pips, takeProfit.pips);
     
   const [isFocused, setIsFocused] = useState(false);
@@ -83,43 +83,44 @@ export const TradeEditForm: React.FC<TradeEditFormProps> = ({ toggleNote }) => {
     if (!isNaN(price)) {
       setTrade((prev) => ({ ...prev, entry: price }));
     }
-  }, [entry, setEntry, setTrade]);
+  }, [setTrade]);
 
 const handleLotSize = useCallback((text: string) => {
-    const lot = sanitized(text);
-    setLotSize(lot);
-    if (lot >= MIN_LOT_SIZE){
-        setTrade((prev) => ({ ...prev, lot: Number(lot)}));
+    const value = sanitized(text);
+    setLotSize(value);
+    const lotNumber = parseFloat(value);
+    if (!isNaN(lotNumber) && lotNumber >= Number(MIN_LOT_SIZE)) {
+      setTrade((prev) => ({ ...prev, lot: lotNumber }));
     }
-  }, [lotSize, setLotSize]);
+  }, [setTrade]);
 
   const handleTP = useCallback((text: string) => {
     const value = sanitized(text);
     setTP(value);
-    const tpValue  = parseFloat(value);
-    if(!isNaN(tpValue)){
+    const tpValue = parseFloat(value);
+    if (!isNaN(tpValue)) {
       const newGainPips = getPipDifference(entryPrice, tpValue, pips);
       const takeProfit = {
         value: tpValue,
         pips: newGainPips
-      }
-      setTrade((prev) => ({ ...prev, takeProfit}));
+      };
+      setTrade((prev) => ({ ...prev, takeProfit }));
     }
-  }, [entryPrice, tp]);
+  }, [entryPrice, pips, setTrade]);
 
   const handleSL = useCallback((text: string) => {
     const value = sanitized(text);
     setSL(value);
-    const slValue  = parseFloat(value);
-    if(!isNaN(slValue)){
-      const losspips = getPipDifference(entryPrice, Number(slValue), pips);
+    const slValue = parseFloat(value);
+    if (!isNaN(slValue)) {
+      const lossPips = getPipDifference(entryPrice, slValue, pips);
       const stopLoss = {
         value: slValue,
-        pips: losspips
-      }
-      setTrade((prev) => ({ ...prev, stopLoss}));
+        pips: lossPips
+      };
+      setTrade((prev) => ({ ...prev, stopLoss }));
     }
-  }, [entryPrice, sl]);
+  }, [entryPrice, pips, setTrade]);
 
 
   const handleEditorChange = useCallback((plainText: string, editorState: string) => {
@@ -155,7 +156,7 @@ const handleLotSize = useCallback((text: string) => {
               value={lotSize}
               keyboardType="decimal-pad"
               inputMode="decimal"
-              testID="lot-dsize-input"
+              testID="lot-size-input"
               aria-label={localize('placeholder.lot')}
               onChangeText={handleLotSize}
               style={{ width: isFocused ? 100 : 'auto' }}
