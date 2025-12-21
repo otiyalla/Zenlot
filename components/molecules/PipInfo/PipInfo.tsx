@@ -3,18 +3,13 @@ import { TextInput, Text } from '@/components/atoms';
 import { VStack, HStack } from '@/components/design-system/ui';
 import { useTranslate } from '@/hooks/useTranslate';
 import { useTrade } from '@/providers/TradeProvider';
-import { MIN_LOT_SIZE } from '@/constants';
+import { MIN_LOT_SIZE, sanitized } from '@/constants';
 
 export const PipInfo: React.FC<{}> = () => {
     const { trade, setTrade } = useTrade();
     const { pips: savedPips, lot } = trade;
     const [pips, setPips] = useState<string>(savedPips.toString());
     const [lotSize, setLotSize] = useState<string>(lot.toString());
-    const sanitized = (text: string) => {
-        const sanitized = text.replace(/[^0-9.]/g, ''); // Only allow digits and one dot
-        const normalized = sanitized.replace(/(\..*?)\..*/g, '$1'); // Only one dot allowed
-        return normalized;
-    };
     const { localize } = useTranslate();
  
     useEffect(() => {
@@ -50,6 +45,7 @@ export const PipInfo: React.FC<{}> = () => {
                     onChangeText={handlePips}
                     keyboardType="decimal-pad"
                     inputMode="decimal"
+                    testID='pips-size-input'
                     accessibilityLabel={localize('placeholder.pips')}
                     autoCorrect={false}
                     autoComplete='off'
@@ -63,6 +59,7 @@ export const PipInfo: React.FC<{}> = () => {
                     onChangeText={handleLotSize}
                     keyboardType="decimal-pad"
                     inputMode="decimal"
+                    testID="lot-size-input"
                     accessibilityLabel={localize('placeholder.lot')}
                     autoCorrect={false}
                     autoComplete='off'

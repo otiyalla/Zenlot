@@ -246,7 +246,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
                     <VStack>
                         <HStack>
                             <Text
-                                size='md'
+                                size='sm'
                                 style={[styles.label, { color: theme.lightText }]}
                                 accessibilityLabel={localize("forex.entry")}
                             >
@@ -263,7 +263,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
                         </HStack>
                         <HStack>
                             <Text
-                                size='md'
+                                size='sm'
                                 style={[styles.label, { color: theme.lightText }]}
                                 accessibilityLabel={localize("forex.ratio")}
                             >
@@ -280,7 +280,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
                     <VStack>
                         <HStack>
                             <Text
-                                size='md'
+                                size='sm'
                                 style={[styles.label, { color: theme.lightText }]}
                                 accessibilityLabel={localize("forex.sl")}
                             >
@@ -297,7 +297,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
                         </HStack>
                         <HStack>
                             <Text
-                                size='md'
+                                size='sm'
                                 style={[styles.label, { color: theme.lightText }]}
                                 accessibilityLabel={localize("forex.sl")}
                             >
@@ -316,7 +316,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
                     <VStack>
                         <HStack>
                             <Text
-                                size='md'
+                                size='sm'
                                 style={[styles.label, { color: theme.lightText }]}
                                 accessibilityLabel={localize("forex.tp")}
                             >
@@ -333,7 +333,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
                         </HStack>
                         <HStack>
                             <Text
-                                size='md'
+                                size='sm'
                                 style={[styles.label, { color: theme.lightText }]}
                                 accessibilityLabel={localize("forex.tp")}
                             >

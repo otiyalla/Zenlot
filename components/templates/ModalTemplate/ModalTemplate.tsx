@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, DimensionValue } from 'react-native';
 import { Modal } from '@/components/atoms';
 
 export interface ModalAction {
@@ -13,8 +13,10 @@ export interface ModalAction {
 export interface ModalTemplateProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   children: React.ReactNode;
+  header?: React.ReactNode;
+  contentHeight?: DimensionValue;
   actions?: ModalAction[];
   size?: 'sm' | 'md' | 'lg' | 'full';
   showHeader?: boolean;
@@ -28,6 +30,8 @@ export const ModalTemplate: React.FC<ModalTemplateProps> = ({
   onClose,
   title,
   children,
+  header,
+  contentHeight,
   actions = [],
   size = 'md',
   showHeader = true,
@@ -51,7 +55,9 @@ export const ModalTemplate: React.FC<ModalTemplateProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
+      contentHeight={contentHeight}
       showHeader={showHeader}
+      headerNode={header}
       headerText={title}
       size={size}
       testID={testID}

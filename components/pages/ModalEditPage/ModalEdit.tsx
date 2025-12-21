@@ -1,10 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { Text } from '@/components/atoms';
 import { useTranslate } from '@/hooks/useTranslate';
-import { TradeEntryForm } from '@organisms/TradeEntryForm'
 import { useTrade } from '@/providers/TradeProvider';
-import { TextEditor } from '@organisms/Editor';
 import { ModalTemplate  as Modal} from '@templates/ModalTemplate';
+import { TradeEditForm, TradeEditHeader } from '@/components/organisms';
 
 export interface ModalEditPageProps {
     isOpen: boolean
@@ -36,22 +35,14 @@ export const ModalEditPage: React.FC<ModalEditPageProps> =  ({ isOpen, tradeErro
         setShow(false);
     }, [onConfirm]);
 
-    const handleEditorChange = useCallback((plainText: string, editorState: string) => {
-        setTrade(prev => ({
-            ...prev,
-            plainText,
-            editorState,
-        }));
-    }, [setTrade]);
-
-
     return (
         <Modal
             isOpen={isOpen}
             onClose={handleCancel}
-            title={localize('forex.edit_title')}
+            header={<TradeEditHeader />}
             aria-label={localize('forex.edit_title')}
-            size={ show ? 'full' : 'lg'}
+            size='full'
+            contentHeight={ show ? '80%' : '50%'}
             testID='modal-edit-trade'
             showFooter={true}
             actions={
@@ -70,14 +61,7 @@ export const ModalEditPage: React.FC<ModalEditPageProps> =  ({ isOpen, tradeErro
             {!!tradeError && (
                 <Text error bold >{tradeError}</Text>
             )}
-            <TradeEntryForm/>
-            {show && (
-                <TextEditor 
-                    plainText={currentTrade?.plainText}
-                    editorState={currentTrade?.editorState}
-                    onChange={handleEditorChange}
-                />
-            )}
+            <TradeEditForm toggleNote={show}/>
         </Modal>
     );
 };

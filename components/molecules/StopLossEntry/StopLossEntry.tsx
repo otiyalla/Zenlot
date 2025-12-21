@@ -48,8 +48,8 @@ export const StopLossEntry = ({ execution, exchangeRate}: ExecutionProps) => {
     ));
 
     return (
-        <Box className='padding-2 border rounded' style={{ borderColor: 'red' }}>
-            <Text bold className='text-lg m-2'>{localize('forex.stop_loss')}</Text>
+        <Box className="p-3 border border-outline-200 rounded-lg" style={{ borderColor: 'red' }}>
+            <Text bold>{localize('forex.stop_loss')}</Text>
             <TextInput
                 placeholder={localize('placeholder.loss')}
                 value={value}
@@ -59,7 +59,7 @@ export const StopLossEntry = ({ execution, exchangeRate}: ExecutionProps) => {
                 inputMode='decimal'
                 keyboardType='decimal-pad'
                 aria-label={localize('placeholder.loss')}
-                
+                testID='stop-loss-input'
             />
             {(isFocused ) && (
                 <Box className="p-2 br-md shadow-2">
@@ -67,7 +67,7 @@ export const StopLossEntry = ({ execution, exchangeRate}: ExecutionProps) => {
                 </Box>
             )}
             { !!value.length && !isNaN(Number(value)) && (
-                <Box className="p-2">
+                <Box className="border-t border-outline-500 mt-2 pt-2">
                     <Text>{localize('forex.pips')}: {pips}</Text>
                     <Text>{localize('forex.loss')}: {loss}</Text>
                 </Box>

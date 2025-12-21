@@ -11,7 +11,7 @@ import { useTranslate } from '@/hooks/useTranslate';
 export type TradeDetailsProps = {
   isOpen: boolean;
   onClose: () => void;
-  trade: TradeEntryState | null;
+  trade: any;
 };
 
 export const TradeDetails: React.FC<TradeDetailsProps> = ({ isOpen, onClose, trade }) => {
