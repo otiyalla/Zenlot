@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, use } from 'react';
 import {
   HStack, VStack, Text,
   Badge, BadgeText, Divider, Box
@@ -76,48 +76,50 @@ export const TradeEditForm: React.FC<TradeEditFormProps> = ({ toggleNote }) => {
 
   const openedLabel = createdAt ? formatDate(new Date(createdAt), language) : '';
 
-  const handleEntryChange = (text: string) => {
+  const handleEntryChange = useCallback((text: string) => {
     const value = sanitized(text);
     setEntry(value);
     const price = parseFloat(value);
     if (!isNaN(price)) {
       setTrade((prev) => ({ ...prev, entry: price }));
     }
-  };
+  }, [entry, setEntry, setTrade]);
 
-const handleLotSize = (text: string) => {
+const handleLotSize = useCallback((text: string) => {
     const lot = sanitized(text);
     setLotSize(lot);
     if (lot >= MIN_LOT_SIZE){
         setTrade((prev) => ({ ...prev, lot: Number(lot)}));
     }
-  };
+  }, [lotSize, setLotSize]);
 
-  const handleTP = (text: string) => {
+  const handleTP = useCallback((text: string) => {
     const value = sanitized(text);
     setTP(value);
     const tpValue  = parseFloat(value);
     if(!isNaN(tpValue)){
+      const newGainPips = getPipDifference(entryPrice, tpValue, pips);
       const takeProfit = {
         value: tpValue,
-        pips: gainpips
+        pips: newGainPips
       }
       setTrade((prev) => ({ ...prev, takeProfit}));
     }
-  };
+  }, [entryPrice, tp]);
 
-  const handleSL = (text: string) => {
+  const handleSL = useCallback((text: string) => {
     const value = sanitized(text);
     setSL(value);
     const slValue  = parseFloat(value);
     if(!isNaN(slValue)){
+      const losspips = getPipDifference(entryPrice, Number(slValue), pips);
       const stopLoss = {
         value: slValue,
         pips: losspips
       }
       setTrade((prev) => ({ ...prev, stopLoss}));
     }
-  };
+  }, [entryPrice, sl]);
 
 
   const handleEditorChange = useCallback((plainText: string, editorState: string) => {
