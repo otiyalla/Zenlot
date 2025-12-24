@@ -17,6 +17,7 @@ import { TextEditor } from '@organisms/Editor';
 
 export type TradeEditFormProps = {
   toggleNote: boolean;
+  errors?: string[];
 };
 
 export const TradeEditHeader: React.FC<{}> = ({}) => {
@@ -48,7 +49,7 @@ export const TradeEditHeader: React.FC<{}> = ({}) => {
   );
 }
 
-export const TradeEditForm: React.FC<TradeEditFormProps> = ({ toggleNote }) => {
+export const TradeEditForm: React.FC<TradeEditFormProps> = ({ toggleNote, errors }) => {
   const { trade, setTrade } = useTrade();
   const { localize } = useTranslate();
   const { user } = useUser();
@@ -85,7 +86,7 @@ export const TradeEditForm: React.FC<TradeEditFormProps> = ({ toggleNote }) => {
     }
   }, [setTrade]);
 
-const handleLotSize = useCallback((text: string) => {
+  const handleLotSize = useCallback((text: string) => {
     const value = sanitized(text);
     setLotSize(value);
     const lotNumber = parseFloat(value);
@@ -133,11 +134,11 @@ const handleLotSize = useCallback((text: string) => {
   
 
   return (
-      <VStack space="md">
-        <Box className={`border border-outline-200 border-l-4 p-2 rounded-lg ${
-          execution === 'buy' ? 'border-l-success-600' : 'border-l-error-600'
-        }`}>
-            <HStack className="justify-between">
+    <VStack space="md">
+      <Box className={`border border-outline-200 border-l-4 p-2 rounded-lg ${
+        execution === 'buy' ? 'border-l-success-600' : 'border-l-error-600'
+      }`}>
+          <HStack className="justify-between">
             <VStack>
               <Text size="xs" className="text-typography-500">{localize('forex.entry')}</Text>
               <TextInput
@@ -147,21 +148,22 @@ const handleLotSize = useCallback((text: string) => {
               testID="entry-price-input"
               aria-label={localize('placeholder.entry')}
               onChangeText={handleEntryChange}
+              error={errors?.includes('entry')}
               style={{ width:100 }}
               />
             </VStack>
             <VStack>
               <Text size="xs" className="text-typography-500">{localize('forex.lot') || 'Lot'}</Text>
               <TextInput
-              value={lotSize}
-              keyboardType="decimal-pad"
-              inputMode="decimal"
-              testID="lot-size-input"
-              aria-label={localize('placeholder.lot')}
-              onChangeText={handleLotSize}
-              style={{ width: isFocused ? 100 : 'auto' }}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
+                value={lotSize}
+                keyboardType="decimal-pad"
+                inputMode="decimal"
+                testID="lot-size-input"
+                style={{ width: isFocused ? 100 : 'auto' }}
+                aria-label={localize('placeholder.lot')}
+                onChangeText={handleLotSize}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
               />
             </VStack>
             <VStack>
@@ -170,88 +172,88 @@ const handleLotSize = useCallback((text: string) => {
               {reward} : 1
               </Text>
             </VStack>
-            </HStack>
+          </HStack>
+      </Box>
+
+      <HStack space="md">
+        <Box className="flex-1 p-2 border border-outline-200 rounded-lg">
+          <Text size="xs" className="text-typography-500">{localize('forex.sl')}</Text>
+          <TextInput
+            value={sl}
+            onChangeText={handleSL}
+            keyboardType="decimal-pad"
+            inputMode="decimal"
+            testID="stop-loss-input"
+            aria-label={localize('forex.sl')}
+            error={errors?.includes('stopLoss')}
+          />
+          <VStack className="border-t border-outline-500 mt-2 pt-2">
+            <Text size='sm'>{localize('forex.pips')}: {losspips}</Text>
+            <Text size='sm'>{localize('forex.loss')}: {loss}</Text>
+          </VStack>
         </Box>
+        <Box className="flex-1 p-2 border border-outline-200 rounded-lg">
+          <Text size="xs" className="text-typography-500">{localize('forex.tp')}</Text>
+          <TextInput
+            value={tp}
+            onChangeText={handleTP}
+            keyboardType="decimal-pad"
+            inputMode="decimal"
+            testID="take-profit-input"
+            aria-label={localize('forex.tp')}
+            error={errors?.includes('takeProfit')}
+          />
+          <VStack className="border-t border-outline-500 mt-2 pt-2">
+            <Text size='sm'>{localize('forex.pips')}: {gainpips}</Text>
+            <Text size='sm'>{localize('forex.gain')}: {gain}</Text>
+          </VStack>
+        </Box>
+      </HStack>
 
-        <HStack space="md">
+      <HStack space="md">
+        {exchangeRate != null && (
           <Box className="flex-1 p-2 border border-outline-200 rounded-lg">
-            <Text size="xs" className="text-typography-500">{localize('forex.sl')}</Text>
-            <TextInput
-              value={sl}
-              onChangeText={handleSL}
-              keyboardType="decimal-pad"
-              inputMode="decimal"
-              testID="stop-loss-input"
-              aria-label={localize('forex.sl')}
+            <Text size="xs" className="text-typography-500">{localize('rate')}</Text>
+            <Text bold size="lg">{exchangeRate}</Text>
+          </Box>
+        )}
+        <Box className="flex-1 p-2 border border-outline-200 rounded-lg">
+          <Text size="xs" className="text-typography-500">{localize('common.opened')}</Text>
+          <Text bold size="lg">{openedLabel}</Text>
+        </Box>
+      </HStack>
+
+      {toggleNote && (
+        <>
+          <Divider />
+          <VStack space="xs">
+            <Text size="xs" className="text-typography-500">{localize('journal.title')}</Text>
+            <TextEditor 
+              plainText={plainText}
+              editorState={editorState}
+              onChange={handleEditorChange}
             />
-            <VStack className="border-t border-outline-500 mt-2 pt-2">
-              <Text size='sm'>{localize('forex.pips')}: {losspips}</Text>
-              <Text size='sm'>{localize('forex.loss')}: {loss}</Text>
-            </VStack>
-          </Box>
-          <Box className="flex-1 p-2 border border-outline-200 rounded-lg">
-            <Text size="xs" className="text-typography-500">{localize('forex.tp')}</Text>
-            <TextInput
-              value={tp}
-              onChangeText={handleTP}
-              keyboardType="decimal-pad"
-              inputMode="decimal"
-              testID="take-profit-input"
-              aria-label={localize('forex.tp')}
-            />
-            <VStack className="border-t border-outline-500 mt-2 pt-2">
-              <Text size='sm'>{localize('forex.pips')}: {gainpips}</Text>
-              <Text size='sm'>{localize('forex.gain')}: {gain}</Text>
-            </VStack>
-          </Box>
-        </HStack>
+            
+          </VStack>
+        </>
+      ) }
 
-        <HStack space="md">
-          {exchangeRate != null && (
-            <Box className="flex-1 p-2 border border-outline-200 rounded-lg">
-              <Text size="xs" className="text-typography-500">{localize('rate')}</Text>
-              <Text bold size="lg">{exchangeRate}</Text>
-            </Box>
-          )}
-          <Box className="flex-1 p-2 border border-outline-200 rounded-lg">
-            <Text size="xs" className="text-typography-500">{localize('common.opened')}</Text>
-            <Text bold size="lg">{openedLabel}</Text>
-          </Box>
-        </HStack>
-
-        {toggleNote && (
-          <>
-            <Divider />
-            <VStack space="xs">
-              <Text size="xs" className="text-typography-500">{localize('journal.title')}</Text>
-              <TextEditor 
-                plainText={plainText}
-                editorState={editorState}
-                onChange={handleEditorChange}
-              />
-              
-            </VStack>
-          </>
-        ) }
-
-        {/* Tags */}
-        {Array.isArray(tags) && tags.length > 0 ? (
-          <>
-            <Divider />
-            <VStack space="xs">
-              <Text size="xs" className="text-typography-500">Tags</Text>
-              <HStack space="sm" className="flex-wrap">
-                {tags.map((t, i) => (
-                  <Badge key={`${t}-${i}`} variant="solid" className="rounded-full px-2 py-0.5">
-                    <BadgeText>#{t}</BadgeText>
-                  </Badge>
-                ))}
-              </HStack>
-            </VStack>
-          </>
-        ) : null}
-      </VStack>
+      {/* Tags */}
+      {Array.isArray(tags) && tags.length > 0 ? (
+        <>
+          <Divider />
+          <VStack space="xs">
+            <Text size="xs" className="text-typography-500">Tags</Text>
+            <HStack space="sm" className="flex-wrap">
+              {tags.map((t, i) => (
+                <Badge key={`${t}-${i}`} variant="solid" className="rounded-full px-2 py-0.5">
+                  <BadgeText>#{t}</BadgeText>
+                </Badge>
+              ))}
+            </HStack>
+          </VStack>
+        </>
+      ) : null}
+    </VStack>
   );
 }
-
-// there is a bug when you enter a trade you want to sell, try to change the account currency then try to sell. 

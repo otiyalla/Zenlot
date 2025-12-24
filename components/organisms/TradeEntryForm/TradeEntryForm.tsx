@@ -12,12 +12,14 @@ import { AvailableSymbolsProps } from '@/types';
 export interface TradeEntryFormProps {
   onSymbolSelect?: (symbol: string) => void;
   onEntryChange?: (entry: number) => void;
+  errors?: string[];
   testID?: string;
 }
 
 export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
   onSymbolSelect,
   onEntryChange,
+  errors,
   testID,
 }) => {
   const { trade, setTrade } = useTrade();
@@ -211,6 +213,7 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
         placeholder={localize('placeholder.forex')}
         renderResult={renderSearchResult}
         testID="symbol-search"
+        error={errors?.includes('symbol')}
         loading={loading}
         results={filteredResults}
       />
@@ -222,6 +225,7 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
         keyboardType="decimal-pad"
         inputMode="decimal"
         testID="entry-price-input"
+        error={errors?.includes('entry')}
         aria-label={localize('placeholder.entry')}
       />
       
@@ -232,8 +236,8 @@ export const TradeEntryForm: React.FC<TradeEntryFormProps> = ({
       )}
       
       <View style={styles.tradeLevels}>
-        <StopLossEntry execution={execution} exchangeRate={exchangeRate} />
-        <TakeProfitEntry execution={execution} exchangeRate={exchangeRate} />
+        <StopLossEntry execution={execution} exchangeRate={exchangeRate} error={errors?.includes('stopLoss')} />
+        <TakeProfitEntry execution={execution} exchangeRate={exchangeRate} error={errors?.includes('takeProfit')} />
       </View>
     </View>
   );

@@ -9,7 +9,7 @@ import { useTranslate } from '@/hooks/useTranslate';
 import { useTrade } from '@/providers/TradeProvider';
 import { useUser } from '@/providers/UserProvider';
 
-export const StopLossEntry = ({ execution, exchangeRate}: ExecutionProps) => {
+export const StopLossEntry = ({ execution, exchangeRate, error }: ExecutionProps & { error?: boolean }) => {
     const [isFocused, setIsFocused] = useState(false);
     const { localize } = useTranslate();
     const { trade, setTrade} = useTrade();
@@ -60,6 +60,7 @@ export const StopLossEntry = ({ execution, exchangeRate}: ExecutionProps) => {
                 keyboardType='decimal-pad'
                 aria-label={localize('placeholder.loss')}
                 testID='stop-loss-input'
+                error={error}
             />
             {(isFocused ) && (
                 <Box className="p-2 br-md shadow-2">
