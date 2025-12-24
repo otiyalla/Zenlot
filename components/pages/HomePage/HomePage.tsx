@@ -128,7 +128,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           testID="trade-modal"
           showFooter={true}
           >
-            <TradeEntryForm />
+            <TradeEntryForm errors={errorsFields} />
         </ModalTemplate>
       </PageTemplate>
   );

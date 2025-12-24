@@ -36,7 +36,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
     const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
     const { setTrade, duplicateTrade, editTrade, deleteTrade, resetTrade, currentRate } = useTrade();
     const [tradeError, setTradeError] = useState<string>("");
-    const [errorsFields, setErrorsFields] = useState<string[]>([]);
+    const [errorFields, setErrorFields] = useState<string[]>([]);
     const statusMenuOptions = [
         {
             label: "common.open",
@@ -159,7 +159,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
      const onCancel = useCallback(() => {
         setIsEditOpen(false);
         setTradeError('');
-        setErrorsFields([]);
+        setErrorFields([]);
         resetTrade();
     }, [isEditOpen, resetTrade]);
 
@@ -173,10 +173,9 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
                 const { issues } = error;
                 const pretty = z.prettifyError(error);
                 console.log("edit error message: ", pretty);
-                const {errorFields, errorMessage} = parseErrors(JSON.parse(error.message));
-                setErrorsFields(errorFields);
-                const message = errorMessage[errorFields[0]];
-                setTradeError(message);
+                const {errorFields: errors, errorMessage} = parseErrors(JSON.parse(error.message));
+                setErrorFields(errors);
+                const message = errorMessage[errors[0]];
             } else {
                 setTradeError('Edit submission failed');
                 console.error('trade entry error:', error);
@@ -208,7 +207,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
 
     return (
         <>
-            {isEditOpen ? <ModalEdit isOpen={isEditOpen} tradeError={tradeError} onCancel={onCancel} onConfirm={onConfirm}/> :
+            {isEditOpen ? <ModalEdit isOpen={isEditOpen} tradeErrors={errorFields} onCancel={onCancel} onConfirm={onConfirm}/> :
             <View
                 style={[
                     {backgroundColor: theme.background, shadowColor: theme.text},

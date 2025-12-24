@@ -142,7 +142,7 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const submitTrade = async (validated: Partial<TradeEntryState>) => {
-        const trade = { ...validated, status: "open" as TradeEntryState['status'], accountCurrency };
+        const trade = { ...validated, status: "open" as TradeEntryState['status'] };
         try{
             const newTrade = await createTrade(trade);
             console.log('The new trade:', newTrade);

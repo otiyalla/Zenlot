@@ -9,7 +9,7 @@ import { useTrade } from '@/providers/TradeProvider';
 import { useUser } from '@/providers/UserProvider';
 import { ExecutionProps } from '@/types';
 
-export const TakeProfitEntry = ({ exchangeRate, execution }: ExecutionProps) => {
+export const TakeProfitEntry = ({ exchangeRate, execution, error }: ExecutionProps & { error?: boolean }) => {
     const { trade, setTrade} = useTrade();
     const tpValue = trade.takeProfit.value ? trade.takeProfit.value.toString() : '';
     const [value, setValue] = useState(tpValue);
@@ -62,6 +62,7 @@ export const TakeProfitEntry = ({ exchangeRate, execution }: ExecutionProps) => 
                 keyboardType='decimal-pad'
                 aria-label={localize('placeholder.profit')}
                 testID='take-profit-input'
+                error={error}
             />
             {(isFocused ) && (
                 <Box className="mt-1 br-md shadow-2">

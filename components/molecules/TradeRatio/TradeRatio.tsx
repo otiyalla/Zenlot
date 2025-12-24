@@ -14,7 +14,7 @@ export const TradeRatio: React.FC<TradeRatioProps> = ({ risk, reward }) => {
     }, [risk, reward]);
     
     return (
-       <HStack space='xs' style={{  justifyContent: 'space-around' }}>
+       <HStack space='xs' style={{  justifyContent: 'space-between' }}>
             <VStack>
                 <Text>{localize('forex.tp')} & {localize('forex.sl')} {localize('forex.ratio')}</Text>
                 <Text>{ reward } : 1</Text>
