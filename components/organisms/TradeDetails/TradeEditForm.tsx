@@ -149,6 +149,7 @@ export const TradeEditForm: React.FC<TradeEditFormProps> = ({ toggleNote, errors
               aria-label={localize('placeholder.entry')}
               onChangeText={handleEntryChange}
               error={errors?.includes('entry')}
+              style={{ width:100 }}
               />
             </VStack>
             <VStack>
@@ -158,6 +159,7 @@ export const TradeEditForm: React.FC<TradeEditFormProps> = ({ toggleNote, errors
                 keyboardType="decimal-pad"
                 inputMode="decimal"
                 testID="lot-size-input"
+                style={{ width: isFocused ? 100 : 'auto' }}
                 aria-label={localize('placeholder.lot')}
                 onChangeText={handleLotSize}
                 onFocus={() => setIsFocused(true)}
