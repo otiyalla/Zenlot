@@ -25,7 +25,7 @@ export const createTradeValidation = z.object({
 });
 
 export const updateTradeValidation = createTradeValidation.extend({
-    id: z.number().gt(0).register(tradeValidationRegistry, { title: "id", description: "unique trade id" }),
+    id: z.string().register(tradeValidationRegistry, { title: "id", description: "unique trade id" }),
     createdAt: z.string().register(tradeValidationRegistry, { title: "Create at", description: "The trade created date" }),
     updatedAt: z.string().register(tradeValidationRegistry, { title: "Updated at", description: "The trade updated date" }),
 })

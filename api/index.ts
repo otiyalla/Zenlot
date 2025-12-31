@@ -21,7 +21,7 @@ export const getTokens = async () => {
     const access_token = await AsyncStorage.getItem(authStorageKey);
     const refresh_token = await AsyncStorage.getItem(authRefreshKey);
     const id = await AsyncStorage.getItem(zen_user);
-    return { access_token, refresh_token, userId: Number(id)};
+    return { access_token, refresh_token, userId: id };
 }
 
 

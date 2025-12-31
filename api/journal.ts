@@ -46,19 +46,21 @@ export const journalApi = {
     return await api.create('journal', { ...data, userId });
   },
 
-  async updateJournal(id: number, data: Partial<JournalEntry>) {
+  async updateJournal(id: string, data: Partial<JournalEntry>) {
     return await api.update(`journal/${id}`, data);
   },
 
-  async deleteJournal(id: number) {
+  async deleteJournal(id: string) {
     return await api.delete(`journal/${id}`);
   },
 
   async searchJournals(params: SearchJournalParams) {
     const { userId } = await getTokens();
-    
+    if (!userId) {
+      throw new Error('User ID is required to search journals');
+    }
     const queryParams = new URLSearchParams();
-    queryParams.append('userId', userId.toString());
+    queryParams.append('userId', userId);
     
     if (params.query) queryParams.append('query', params.query);
     if (params.symbol) queryParams.append('symbol', params.symbol);

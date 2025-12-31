@@ -53,7 +53,7 @@ export const tradeApi = {
         return await api.create('trade', { ...data, userId }, headers);
     },
 
-    async updateTrade(id: number, data: any) {
+    async updateTrade(id: string, data: any) {
         const { access_token, refresh_token } = await getTokens();
         const headers = {
             access_token: access_token || '',
@@ -62,7 +62,7 @@ export const tradeApi = {
         return await api.update(`trade/${id}`, data, headers);
     },
 
-    async deleteTrade(id: number) {
+    async deleteTrade(id: string) {
         const { access_token, refresh_token } = await getTokens();
         const headers = {
             access_token: access_token || '',

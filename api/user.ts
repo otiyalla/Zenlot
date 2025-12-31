@@ -32,7 +32,7 @@ export const userApi = {
         return await api.create(`user/change-password`, { ...data, userId}, headers);
     },
 
-    async deleteUser(id: number) {
+    async deleteUser(id: string) {
         const { access_token, refresh_token } = await getTokens();
         const headers = {
             access_token: access_token || '',
