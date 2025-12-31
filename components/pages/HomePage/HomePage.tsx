@@ -57,8 +57,6 @@ export const HomePage: React.FC<HomePageProps> = ({
           console.log("create trade error: ", prettifyError);
           const {errorFields, errorMessage} = parseErrors(JSON.parse(error.message));
           setErrorsFields(errorFields);
-          const message = errorMessage[errorFields[0]];
-          setTradeError(message);
         } else {
           setTradeError('Invalid trade');
           console.error('trade entry error:', error);
@@ -76,6 +74,10 @@ export const HomePage: React.FC<HomePageProps> = ({
         setRefreshing(false);
       }
   }, [refreshTrades]);
+
+  const onError = (errorMessage: string) => {
+    setTradeError(errorMessage);
+  }
 
   const modalActions = [
     {
@@ -100,6 +102,13 @@ export const HomePage: React.FC<HomePageProps> = ({
             </Text>
           </View>
         )}
+        {!!tradeError.length && (
+          <View style={[styles.networkStatus, { backgroundColor: theme.error }]}>
+            <Text color="inverse" align="center">
+              {tradeError}
+            </Text>
+          </View>
+        )}
 
         {/* Trading Analysis */}
         <TradingAnalysis/>
@@ -110,12 +119,12 @@ export const HomePage: React.FC<HomePageProps> = ({
             title={localize('tap_to_enter_trade')}
             onPress={handleOpenTradeModal}
             testID="new-trade-button"
-            />
+          />
         </View>
 
         {/* Active Trades */}
         <View style={styles.activeTradesSection}>
-          <ActiveTrades/>
+          <ActiveTrades onError={onError} />
         </View>
 
         {/* Trade Entry Modal */}
@@ -128,7 +137,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           testID="trade-modal"
           showFooter={true}
           >
-            <TradeEntryForm />
+            <TradeEntryForm errors={errorsFields} />
         </ModalTemplate>
       </PageTemplate>
   );

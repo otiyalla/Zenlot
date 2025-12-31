@@ -21,7 +21,6 @@ const TradeContext = createContext<TradeContextType | undefined>(undefined);
 
 const TradeProvider = ({ children }: { children: ReactNode }) => {
     const { refreshAuthToken, user } = useAuth();
-    const { language, accountCurrency } = user ?? {language: 'en'};
     const [trade, setTrade] = useState<TradeEntryState | ITrade>({ ...defaultTrade });
     const [tradeHistory, setTradeHistory] = useState<TradeEntryState[]>([]);
     const { getTrades, getPrice, getFXRate, deleteTrade: tradeDelete, createTrade, updateTrade } = tradeApi;
@@ -142,10 +141,9 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const submitTrade = async (validated: Partial<TradeEntryState>) => {
-        const trade = { ...validated, status: "open" as TradeEntryState['status'], accountCurrency };
+        const trade = { ...validated, status: "open" as TradeEntryState['status'] };
         try{
             const newTrade = await createTrade(trade);
-            console.log('The new trade:', newTrade);
             setTradeHistory((prev) => {
                 return [ newTrade, ...prev];
             });
@@ -156,7 +154,7 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
         }
     }
     
-    const deleteTrade = (id: number) => {
+    const deleteTrade = (id: string) => {
         try {
             
             tradeDelete(id);
@@ -168,7 +166,7 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
-    const duplicateTrade = async (id: number) => {
+    const duplicateTrade = async (id: string) => {
         const tradeToDuplicate = tradeHistory.find(trade => trade.id === id);
         if (tradeToDuplicate) {
             const duplicate = sensitiveData(tradeToDuplicate);
@@ -186,7 +184,7 @@ const TradeProvider = ({ children }: { children: ReactNode }) => {
         return duplicatedTrade;
     }
 
-    const editTrade = async (id: number, update: TradeEntryState ) => {
+    const editTrade = async (id: string, update: TradeEntryState ) => {
        try {
         await updateTrade(id, update);
         setTradeHistory(prev =>

@@ -15,10 +15,11 @@ import { z } from 'zod';
 
 export type TradeCardProps = {
     trade: TradeEntryState;
+    onError?: (errorMessage: string) => void;
     onPress?: (trade: TradeEntryState) => void;
 };
 
-export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
+export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress, onError }) => {
     const { symbol, entry, execution, status, pips, exchangeRate, lot, stopLoss, takeProfit, createdAt } = trade;
     const { risk, reward } = getRatio(stopLoss.pips, takeProfit.pips);
     const { user } = useUser();
@@ -35,8 +36,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
     const { localize } = useTranslate();
     const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
     const { setTrade, duplicateTrade, editTrade, deleteTrade, resetTrade, currentRate } = useTrade();
-    const [tradeError, setTradeError] = useState<string>("");
-    const [errorsFields, setErrorsFields] = useState<string[]>([]);
+    const [errorFields, setErrorFields] = useState<string[]>([]);
     const statusMenuOptions = [
         {
             label: "common.open",
@@ -87,7 +87,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
         },
     ];
 
-    const getCurrentExchangeRate = async () => {
+    const getCurrentExchangeRate = useCallback(async () => {
         const symbol = trade.symbol;
         const currency = symbol.substring(symbol.length-3, symbol.length);
         let exchangeRate = 1;
@@ -96,17 +96,17 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
         const quote = await currentRate(newsymbol);
         if (quote?.ask) exchangeRate = quote.ask;
         return exchangeRate;
-    }
+    }, [trade, accountCurrency, currentRate]);
 
-    const getCurrentPrice = async () => {
+    const getCurrentPrice = useCallback(async () => {
         const symbol = trade.symbol;
         let exchangeRate = 0;
         const quote = await currentRate(symbol);
         if (quote?.bid) exchangeRate = quote.bid;
         return exchangeRate;
-    }
+    }, [trade, currentRate]);
 
-    const onStatusChnage = async (status: TradeStatus) => {
+    const onStatusChnage = useCallback(async (status: TradeStatus) => {
         const closedAt = new Date();
         let closedPrice = await getCurrentPrice();
         let closedReason = '';
@@ -131,14 +131,14 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
         
         return {closedAt, closedExchangeRate, closedPrice, closedReason}
 
-    }
+    }, [trade]);
 
-    const handleStatusChange = async (newStatus: string) => {
+    const handleStatusChange = useCallback( async (newStatus: string) => {
         const status = newStatus as TradeStatus;
         if (status === trade.status) return;
         let addtionalProps = await onStatusChnage(status);
         editTrade(trade.id, { ...trade, status, ...addtionalProps })
-    }
+    }, [onStatusChnage, editTrade, trade])
 
     const handleMenuSelection = (selection: string) => {
         switch(selection){
@@ -154,12 +154,10 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
         }
     }
 
-
-
-     const onCancel = useCallback(() => {
+    const onCancel = useCallback(() => {
         setIsEditOpen(false);
-        setTradeError('');
-        setErrorsFields([]);
+        setErrorFields([]);
+        onError && onError('');
         resetTrade();
     }, [isEditOpen, resetTrade]);
 
@@ -169,16 +167,14 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
             editTrade(currentTrade.id, validated);
             onCancel();
         } catch (error) {
-            if (error instanceof z.ZodError) {
+            if (error instanceof z.ZodError ) {
                 const { issues } = error;
                 const pretty = z.prettifyError(error);
                 console.log("edit error message: ", pretty);
-                const {errorFields, errorMessage} = parseErrors(JSON.parse(error.message));
-                setErrorsFields(errorFields);
-                const message = errorMessage[errorFields[0]];
-                setTradeError(message);
-            } else {
-                setTradeError('Edit submission failed');
+                const {errorFields: errors, errorMessage} = parseErrors(JSON.parse(error.message));
+                setErrorFields(errors);
+            } else { 
+                onError && onError('Edit submission failed');
                 console.error('trade entry error:', error);
             }
         }
@@ -208,7 +204,7 @@ export const TradeCard: React.FC<TradeCardProps> = ({ trade, onPress }) => {
 
     return (
         <>
-            {isEditOpen ? <ModalEdit isOpen={isEditOpen} tradeError={tradeError} onCancel={onCancel} onConfirm={onConfirm}/> :
+            {isEditOpen ? <ModalEdit isOpen={isEditOpen} tradeErrors={errorFields} onCancel={onCancel} onConfirm={onConfirm}/> :
             <View
                 style={[
                     {backgroundColor: theme.background, shadowColor: theme.text},

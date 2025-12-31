@@ -9,10 +9,10 @@ export interface ModalEditPageProps {
     isOpen: boolean
     onCancel?: () => void
     onConfirm?: (trade: any) => void
-    tradeError?: string
+    tradeErrors?: string[]
 }
 
-export const ModalEditPage: React.FC<ModalEditPageProps> =  ({ isOpen, tradeError, onCancel, onConfirm }) => {
+export const ModalEditPage: React.FC<ModalEditPageProps> =  ({ isOpen, tradeErrors, onCancel, onConfirm }) => {
     const { trade: currentTrade, setTrade } = useTrade();
     const [show, setShow] = useState<boolean>(false);
     const {localize} = useTranslate();
@@ -57,11 +57,8 @@ export const ModalEditPage: React.FC<ModalEditPageProps> =  ({ isOpen, tradeErro
                     }
                 ]
             }
-        >
-            {!!tradeError && (
-                <Text error bold >{tradeError}</Text>
-            )}
-            <TradeEditForm toggleNote={show}/>
+        >    
+            <TradeEditForm toggleNote={show} errors={tradeErrors} />
         </Modal>
     );
 };

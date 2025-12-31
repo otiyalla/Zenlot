@@ -27,6 +27,7 @@ export interface ActiveTradesProps {
   trades?: ActiveTrade[];
   onCloseTrade?: (tradeId: string) => void;
   onViewDetails?: (tradeId: string) => void;
+  onError?: (errorMessage: string) => void;
   testID?: string;
 }
 
@@ -34,6 +35,7 @@ export const ActiveTrades: React.FC<ActiveTradesProps> = ({
   trades = [],
   onCloseTrade,
   onViewDetails,
+  onError,
   testID,
 }) => {
   const { localize } = useTranslate();
@@ -67,7 +69,7 @@ export const ActiveTrades: React.FC<ActiveTradesProps> = ({
       >
         <View>
           {activeTrades.map((trade) =>
-            <TradeCard key={trade.id} trade={trade} onPress={() => handleViewDetails(trade.id.toString())} />
+            <TradeCard key={trade.id} trade={trade} onError={onError} onPress={() => handleViewDetails(trade.id.toString())} />
           )}
         </View>
       </CollapsibleSection>
