@@ -30,7 +30,7 @@ export interface ITrade {
 export type TradeStatus = 'open' | 'close' | 'closed' | 'reached_tp' | 'reached_sl' | 'pending' | 'closed_in_profit' | 'closed_in_loss';
 
 export interface TradeEntryState extends ITrade {
-    id: number;
+    id: string;
     rr: number;
     risk: number;
     reward: number;
@@ -90,9 +90,9 @@ export interface TradeContextType {
     tradeHistory: TradeEntryState[];
     resetTrade: () => void;
     submitTrade: (validated: Partial<TradeEntryState>) => void;
-    deleteTrade: (id: number) => void;
-    duplicateTrade: (id: number) => void;
-    editTrade: (id: number, update: TradeEntryState) => void;
+    deleteTrade: (id: string) => void;
+    duplicateTrade: (id: string) => void;
+    editTrade: (id: string, update: TradeEntryState) => void;
     refreshTrades: () => void;
     currentRate: (symbol: string) => Promise<{ ask: number, open: number, bid: number } | undefined>;
     getAnalysis: (analysis_type: string) => { trades: number, gain: number, loss: number, net: number }
